@@ -12,8 +12,9 @@
 		<property name="connection.password">root</property>
 		
 		
-	<!--  	<mapping class="pti.sb_tmdb_mvc.model." />	-->
-		
+	 	<mapping class="pti.sb_squash_mvc.model.User" />	
+	 	<mapping class="pti.sb_squash_mvc.model.Location" />
+	 	<mapping class="pti.sb_squash_mvc.model.Game" />
 	
 	</session-factory>
 </hibernate-configuration>
