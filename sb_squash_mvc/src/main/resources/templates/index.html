@@ -3,8 +3,42 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Index</title>
+		<style>
+			table 
+			{
+			  border-collapse: collapse;
+			  width: 100%;
+			}
+			
+			th, td 
+			{
+			  padding: 8px;
+			  text-align: left;
+			  border-bottom: 1px solid #DDD;
+			}
+			
+			tr:hover {background-color: #D6EEEE;}
+		</style>
 	</head>
 	<body>
-	
+		<table>
+			<tr>
+				<th>Game ID</th>
+				<th>First user</th>
+				<th>First user's score</th>
+				<th>Second user</th>
+				<th>Second user's score</th>
+				<th>Location</th>
+			</tr>
+			
+			<tr th:each="gameDTO : ${gameDTOList.getGameDTOList()}">
+				<td th:text="${gameDTO.getGameID()}"></td>
+				<td th:text="${gameDTO.getFirstUserDTO().getUserName()}"></td>
+				<td th:text="${gameDTO.getFirstUserScore()}"></td>
+				<td th:text="${gameDTO.getSecondUserDTO.getUserName()}"></td>
+				<td th:text="${gameDTO.getSecondUserScore()}"></td>
+				<td th:text="${gameDTO.getLocationDTO().getLocationName()}"></td>
+			</tr>
+		</table>
 	</body>
 </html>

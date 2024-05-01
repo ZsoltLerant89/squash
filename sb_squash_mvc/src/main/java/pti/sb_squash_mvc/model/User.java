@@ -2,6 +2,8 @@ package pti.sb_squash_mvc.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -25,6 +27,7 @@ public class User {
 	@Column(name = "validpassword")
 	private boolean validPassword;
 	
+	@Enumerated(EnumType.STRING)
 	@Column(name = "role")
 	private RolesOfUsers role;
 	
