@@ -1,5 +1,6 @@
 package pti.sb_squash_mvc.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +77,7 @@ public class AppService {
 		GameDTOList gameDTOList = new GameDTOList(userID);
 		
 		List<Game> gameList = db.getGames();
+		List<UserDTO> userList = new ArrayList<>();
 		
 		for(int index = 0; index < gameList.size();index++)
 		{
@@ -89,6 +91,49 @@ public class AppService {
 			
 			User secondUser = db.getUserByID(secondUserID);
 			UserDTO secondUserDTO = convertUserToUserDTO(secondUser);
+			
+			boolean isfirstUserInList = false;
+			boolean isSecondUserInList = false;
+			
+			if(userList.size()==0)
+			{
+				userList.add(firstUserDTO);
+				userList.add(secondUserDTO);
+			}
+			else
+			{
+				
+				
+				for (int usersIndex = 0; usersIndex < userList.size(); usersIndex++)
+				{
+					UserDTO CurrentUserDTO = userList.get(usersIndex);
+					String currentUserName = CurrentUserDTO.getUserName();
+					
+					if(currentUserName.equals(firstUser.getUsername()))
+					{
+						isfirstUserInList = true;
+						break;	
+					}
+					else if(currentUserName.equals(secondUser.getUsername()))
+					{
+						isSecondUserInList = true;
+						break;
+
+					}
+				
+				}
+				
+			if (isfirstUserInList == false)
+			{
+				userList.add(firstUserDTO);
+			}
+			
+			if (isSecondUserInList == false)
+			{
+				userList.add(secondUserDTO);
+			}
+				
+			}
 			
 			int locationID = currentGame.getGameLocationID();
 			
@@ -106,7 +151,25 @@ public class AppService {
 			gameDTOList.addTogameDTOList(currentGameDTO);
 			
 		}
+		gameDTOList.addUserDTOListTouserDTOList(userList);
+		
+		System.out.println("Userlist " + gameDTOList.getUserList());
+		return gameDTOList;
+	}
 
+	public GameDTOList getUserByNameFromGameDTOList(int userID,String userName) {
+		
+		GameDTOList gameDTOList = getGameDTOList(userID);
+		
+		for(int index = 0; index < gameDTOList.getGameDTOList().size();index++)
+		{
+			GameDTO currentGameDTO = gameDTOList.getGameDTOList().get(index);
+			if((currentGameDTO.getFirstUserDTO().getUserName().equals(userName)) || (currentGameDTO.getSecondUserDTO().getUserName().equals(userName)))
+			{
+				gameDTOList.addToSearchedUser(currentGameDTO);	
+			}
+		}
+		
 		return gameDTOList;
 	}
 

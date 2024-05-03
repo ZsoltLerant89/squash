@@ -52,6 +52,7 @@ public class AppController {
 
 		  	GameDTOList gameDTOList = service.getGameDTOList(userDTO.getUserID());
 		  	model.addAttribute("gameDTOList", gameDTOList);
+		  	model.addAttribute("userDTO", userDTO);
 		  	targetPage = "index.html";
 		  }
 		  
@@ -70,6 +71,21 @@ public class AppController {
 		
 		service.updatePasswordAndLogin(userID, password);
 
+		return "index.html";
+	}
+	
+	@GetMapping("/index/searchuser")
+	private String searchUserByName(Model model,
+									@RequestParam("userid") int userID,
+									@RequestParam("username") String userName 
+									)
+	{
+		GameDTOList gameDTOList = service.getGameDTOList(userID);
+	  	model.addAttribute("gameDTOList", gameDTOList);
+	  	
+	  	GameDTOList searchList = service.getUserByNameFromGameDTOList(userID, userName);
+	  	model.addAttribute("searchList", searchList);
+		
 		return "index.html";
 	}
 }

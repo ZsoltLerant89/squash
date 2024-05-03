@@ -7,12 +7,16 @@ public class GameDTOList {
 
 	private List<GameDTO> gameDTOList;
 	private int userID;
+	private List<GameDTO> searchedUser;
+	private List<UserDTO> userList;
 	
 	
 	public GameDTOList(int userID) {
 		super();
 		this.gameDTOList = new ArrayList<>();
 		this.userID = userID;
+		this.searchedUser = new ArrayList<>();
+		this.userList = new ArrayList<>();
 	}
 
 
@@ -38,6 +42,50 @@ public class GameDTOList {
 	{
 		this.gameDTOList.add(gameDTO);
 	}
+
+
+	public List<GameDTO> getSearchedUser() {
+		return searchedUser;
+	}
+
+
+	public void setSearchedUser(List<GameDTO> searchedUser) {
+		this.searchedUser = searchedUser;
+	}
+	
+	public void addToSearchedUser(GameDTO gameDTO)
+	{
+		this.searchedUser.add(gameDTO);
+	}
+
+	
+	
+	public List<UserDTO> getUserList() {
+		return userList;
+	}
+
+
+	public void setUserList(List<UserDTO> userList) {
+		this.userList = userList;
+	}
+
+
+	public void addUserDTOListTouserDTOList(List<UserDTO> userDTOList)
+	{
+		this.userList = userDTOList;
+	}
+
+
+	@Override
+	public String toString() {
+		return "GameDTOList [gameDTOList=" + gameDTOList + ", userID=" + userID + ", searchedUser=" + searchedUser
+				+ ", userList=" + userList + "]";
+	}
+	
+	
+	
+	
+	
 	
 	
 }

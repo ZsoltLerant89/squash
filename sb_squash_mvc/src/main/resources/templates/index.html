@@ -21,7 +21,8 @@
 		</style>
 	</head>
 	<body>
-		<table>
+		
+		<table th:if="${searchList == null}">
 			<tr>
 				<th>Game ID</th>
 				<th>First user</th>
@@ -40,5 +41,38 @@
 				<td th:text="${gameDTO.getLocationDTO().getLocationName()}"></td>
 			</tr>
 		</table>
+	
+		<form action="/index/searchuser" method="get"> 
+			<p>Search by name:</p>
+			<select name="username">
+				<option>Select</option>
+				<option th:each="userDTO:${gameDTOList.getUserList()}" th:value="${userDTO.getUserName()}" th:text="${userDTO.getUserName()}"></option>
+			</select>
+			<input type="hidden" th:value="${gameDTOList.getUserID()}" name="userid" />
+			<input type="submit" value="Search"/>
+		</form>
+		<div th:if="${searchList != null}">
+		<table th:if="${searchList.getSearchedUser().size() > 0}">
+			<tr>
+				<th>Game ID</th>
+				<th>First user</th>
+				<th>First user's score</th>
+				<th>Second user</th>
+				<th>Second user's score</th>
+				<th>Location</th>
+			</tr>
+			
+			<tr th:each="user : ${searchList.getSearchedUser()}">
+				<td th:text="${user.getGameID()}"></td>
+				<td th:text="${user.getFirstUserDTO().getUserName()}"></td>
+				<td th:text="${user.getFirstUserScore()}"></td>
+				<td th:text="${user.getSecondUserDTO.getUserName()}"></td>
+				<td th:text="${user.getSecondUserScore()}"></td>
+				<td th:text="${user.getLocationDTO().getLocationName()}"></td>
+			</tr>
+		
+		</table>
+		</div>
+		
 	</body>
 </html>

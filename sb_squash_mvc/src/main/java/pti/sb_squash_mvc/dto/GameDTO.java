@@ -75,6 +75,14 @@ public class GameDTO {
 	public void setLocationDTO(LocationDTO locationDTO) {
 		this.locationDTO = locationDTO;
 	}
+
+
+	@Override
+	public String toString() {
+		return "GameDTO [gameID=" + gameID + ", firstUserDTO=" + firstUserDTO + ", firstUserScore=" + firstUserScore
+				+ ", secondUserDTO=" + secondUserDTO + ", secondUserScore=" + secondUserScore + ", locationDTO="
+				+ locationDTO + "]";
+	}
 	
 	
 	
