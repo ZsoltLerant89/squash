@@ -67,26 +67,30 @@
 		<br/>
 		<br/>
 		
-		<form action="/admin/reggame" method="post">
+		<form action="/admin/reggame" method="post" >
 			<h3>Game registration</h3>
 			
-<!--  		<label for="userid">User ID:</label>
-			<input type="hidden" value="${userid}"/>
-			<br/>
-			<br/>
--->			
-			<label for="firstuserid">First User ID:</label>
-			<input type="text" name="firstuserid"/>
-			<br/>
-			<br/>
-			
-			<label for="seconduserid">Second User ID:</label>
-			<input type="text" name="seconduserid"/>
+			<label >First User: </label>
+			<select name="firstuserid">
+				<option >Select</option>
+				<option  th:each="userDTO : ${adminDTO.getUserDTOList()}" th:value="${userDTO.getUserID()}" th:text="${userDTO.getUserName()}"></option>		
+			</select>
 			<br/>
 			<br/>
 			
-			<label for="gamelocationid">Game Location ID:</label>
-			<input type="text" name="gamelocationid"/>
+			<label>Second User: </label>
+			<select name="seconduserid">
+				<option >Select</option>
+				<option  th:each="userDTO : ${adminDTO.getUserDTOList()}" th:value="${userDTO.getUserID()}" th:text="${userDTO.getUserName()}"></option>		
+			</select>
+			<br/>
+			<br/>
+			
+			<label>Game Location: </label>
+			<select name="gamelocationid">
+				<option >Select</option>
+				<option  th:each="locationDTO : ${adminDTO.getLocationDTOList()}" th:value="${locationDTO.getLocationID()}" th:text="${locationDTO.getLocationName()}"></option>		
+			</select>
 			<br/>
 			<br/>
 			

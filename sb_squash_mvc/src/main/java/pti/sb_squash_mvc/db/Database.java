@@ -124,10 +124,23 @@ public class Database {
 	}
 
 	public void persistLocation(Location location) {
+		
 		Session session = sessionFactory.openSession();
 		Transaction tx = session.beginTransaction();
 		
 		session.persist(location);
+		
+		tx.commit();
+		session.close();
+		
+	}
+
+	public void persistGame(Game game) {
+		
+		Session session = sessionFactory.openSession();
+		Transaction tx = session.beginTransaction();
+		
+		session.persist(game);
 		
 		tx.commit();
 		session.close();

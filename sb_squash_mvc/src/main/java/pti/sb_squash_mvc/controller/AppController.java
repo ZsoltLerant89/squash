@@ -135,10 +135,14 @@ public class AppController {
 		
 	  	UserDTO userDTO = service.getUserByID(userID);
 	  	model.addAttribute("userDTO",userDTO);
+	  	
+	  	
 	  
 	  	RolesOfUsers role = RolesOfUsers.ADMIN;
 		if (userDTO.getRole().equals(role))
 		{
+			AdminDTO adminDTO = service.getAdminDTO(userID);
+		  	model.addAttribute(adminDTO);
 			targetPage = "admin.html";
 		}
 		
@@ -146,7 +150,7 @@ public class AppController {
 	}
 	
 	@PostMapping("/admin/reguser")
-	private String registerUser(Model model,
+	private String regUser(Model model,
 //								@RequestParam("userid") int userID,
 								@RequestParam("username") String userName,
 								@RequestParam("password") String password,
@@ -162,14 +166,31 @@ public class AppController {
 	}
 	
 	@PostMapping("/admin/reglocation")
-	private String registerGame(Model model,
+	private String regLocation(Model model,
 								@RequestParam("locationname") String locationName,
 								@RequestParam("locationaddress") String locationAddress,
 								@RequestParam("rentfeeperhour") int rentFeePerHour
 								)
 	{
-		AdminDTO adminDTO = service.regGame(1,locationName,locationAddress,rentFeePerHour);
+		AdminDTO adminDTO = service.regLocation(1,locationName,locationAddress,rentFeePerHour);
 		model.addAttribute("adminDTO",adminDTO);
+		return "admin.html";
+	}
+	
+	@PostMapping("/admin/reggame")
+	private String regGame(Model model, 
+						  @RequestParam("firstuserid") int firstUserID,
+						  @RequestParam("seconduserid") int secondUserID,
+						  @RequestParam("gamelocationid") int gameLocationID,
+						  @RequestParam("firstuserscore") int firstUserScore,
+						  @RequestParam("seconduserscore") int secondUserScore
+						  )
+	{
+		
+		AdminDTO adminDTO = service.regGame(1,firstUserID,secondUserID,gameLocationID,firstUserScore,secondUserScore);
+		model.addAttribute("adminDTO",adminDTO);
+		
+		
 		return "admin.html";
 	}
 }

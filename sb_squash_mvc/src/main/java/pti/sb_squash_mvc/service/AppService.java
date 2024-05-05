@@ -245,7 +245,7 @@ public class AppService {
 		return adminDTO;
 	}
 
-	public AdminDTO regGame(int userID, String locationName, String locationAddress, int rentFeePerHour) {
+	public AdminDTO regLocation(int userID, String locationName, String locationAddress, int rentFeePerHour) {
 		AdminDTO adminDTO = null;
 		
 		Location location = new Location(locationName,locationAddress,rentFeePerHour);
@@ -255,6 +255,44 @@ public class AppService {
 		UserDTO adminUserDTO = new UserDTO(userID,admin.getUsername(),admin.isValidPassword(),admin.getRole());
 		
 		adminDTO = new AdminDTO(adminUserDTO);
+		
+		return adminDTO;
+	}
+
+	public AdminDTO regGame(int userID, int firstUserID, int secondUserID, int gameLocationID, int firstUserScore,
+			int secondUserScore) {
+		AdminDTO adminDTO = null;
+		
+		Game game = new Game(firstUserID, secondUserID, gameLocationID, firstUserScore, secondUserScore);
+		db.persistGame(game);
+		
+		User admin = db.getUserByID(userID);
+		UserDTO adminUserDTO = new UserDTO(userID,admin.getUsername(),admin.isValidPassword(),admin.getRole());
+		
+		GameDTOList gameDTOList = getGameDTOList(userID);
+		List<UserDTO> userlist = gameDTOList.getUserList();
+		
+		adminDTO = new AdminDTO(adminUserDTO);
+		adminDTO.setUserDTOList(userlist);
+		
+		return adminDTO;
+	}
+
+	public AdminDTO getAdminDTO(int userID) {
+		AdminDTO adminDTO = null;
+		
+		User admin = db.getUserByID(userID);
+		UserDTO adminUserDTO = new UserDTO(userID,admin.getUsername(),admin.isValidPassword(),admin.getRole());
+		
+		GameDTOList gameDTOList = getGameDTOList(userID);
+		
+		List<UserDTO> userList = gameDTOList.getUserList();	
+		List<LocationDTO> locationList = gameDTOList.getLocationList();
+		
+		adminDTO = new AdminDTO(adminUserDTO);
+		
+		adminDTO.setUserDTOList(userList);
+		adminDTO.setLocationDTOList(locationList);
 		
 		return adminDTO;
 	}

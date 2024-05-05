@@ -52,5 +52,15 @@ public class AdminDTO {
 	{
 		this.locationDTOList.add(locationDTO);
 	}
+
+
+	@Override
+	public String toString() {
+		return "AdminDTO [userDTOList=" + userDTOList + ", locationDTOList=" + locationDTOList + ", admin=" + admin
+				+ "]";
+	}
+	
+	
+	
 	
 }
