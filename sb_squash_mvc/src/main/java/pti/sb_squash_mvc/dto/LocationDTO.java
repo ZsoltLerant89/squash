@@ -53,6 +53,14 @@ public class LocationDTO {
 	public void setRentFeePerHour(int rentFeePerHour) {
 		this.rentFeePerHour = rentFeePerHour;
 	}
+
+
+	@Override
+	public String toString() {
+		return "LocationDTO [locationID=" + locationID + ", locationName=" + locationName + ", locationAddress="
+				+ locationAddress + ", rentFeePerHour=" + rentFeePerHour + "]";
+	}
+	
 	
 	
 	

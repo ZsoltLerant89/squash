@@ -21,8 +21,10 @@
 		</style>
 	</head>
 	<body>
-		
-		<table th:if="${searchList == null}">
+		<div th:if="${gameDTOList != null}">
+			<a th:href="'/admin?userid=' + ${gameDTOList.getUserID()}" ><button>Admin</button></a>
+		</div>
+		<table th:if="${searchedUserList == null && searchedLocationList == null}">
 			<tr>
 				<th>Game ID</th>
 				<th>First user</th>
@@ -42,7 +44,7 @@
 			</tr>
 		</table>
 	
-		<form action="/index/searchuser" method="get"> 
+		<form action="/index/searchuser" method="get" th:if="${searchedUserList == null && searchedLocationList == null}"> 
 			<p>Search by name:</p>
 			<select name="username">
 				<option>Select</option>
@@ -51,8 +53,8 @@
 			<input type="hidden" th:value="${gameDTOList.getUserID()}" name="userid" />
 			<input type="submit" value="Search"/>
 		</form>
-		<div th:if="${searchList != null}">
-		<table th:if="${searchList.getSearchedUser().size() > 0}">
+		<div th:if="${searchedUserList != null}">
+		<table th:if="${searchedUserList.getSearchedUser().size() > 0}">
 			<tr>
 				<th>Game ID</th>
 				<th>First user</th>
@@ -62,7 +64,7 @@
 				<th>Location</th>
 			</tr>
 			
-			<tr th:each="user : ${searchList.getSearchedUser()}">
+			<tr th:each="user : ${searchedUserList.getSearchedUser()}">
 				<td th:text="${user.getGameID()}"></td>
 				<td th:text="${user.getFirstUserDTO().getUserName()}"></td>
 				<td th:text="${user.getFirstUserScore()}"></td>
@@ -73,6 +75,44 @@
 		
 		</table>
 		</div>
+		
+		
+		<form action="/index/searchlocation" method="get" th:if="${searchedUserList == null && searchedLocationList == null}"> 
+			<p>Search by location:</p>
+			<select name="locationname">
+				<option>Select</option>
+				<option th:each="locationDTO:${gameDTOList.getLocationList()}" th:value="${locationDTO.getLocationName()}" th:text="${locationDTO.getLocationName()}"></option>
+			</select>
+			<input type="hidden" th:value="${gameDTOList.getUserID()}" name="userid" />
+			<input type="submit" value="Search"/>
+		</form>
+		<div th:if="${searchedLocationList != null}">
+		<table th:if="${searchedLocationList.getSearchedLocation().size() > 0}">
+			<tr>
+				<th>Game ID</th>
+				<th>First user</th>
+				<th>First user's score</th>
+				<th>Second user</th>
+				<th>Second user's score</th>
+				<th>Location</th>
+			</tr>
+			
+			<tr th:each="location : ${searchedLocationList.getSearchedLocation()}">
+				<td th:text="${location.getGameID()}"></td>
+				<td th:text="${location.getFirstUserDTO().getUserName()}"></td>
+				<td th:text="${location.getFirstUserScore()}"></td>
+				<td th:text="${location.getSecondUserDTO.getUserName()}"></td>
+				<td th:text="${location.getSecondUserScore()}"></td>
+				<td th:text="${location.getLocationDTO().getLocationName()}"></td>
+			</tr>
+		
+		</table>
+		</div>
+		<br/>
+		<div th:if="${searchedUserList != null || searchedLocationList != null}">
+			<a th:href="'/index?userid=' + ${gameDTOList.getUserID()}" ><button>Back to Index</button></a>
+		</div>
+	
 		
 	</body>
 </html>

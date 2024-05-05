@@ -67,7 +67,7 @@ public class AppService {
 
 	public UserDTO convertUserToUserDTO(User user)
 	{
-		UserDTO userDTO = new UserDTO(user.getUserID(),user.getUsername(),user.isValidPassword());
+		UserDTO userDTO = new UserDTO(user.getUserID(),user.getUsername(),user.isValidPassword(),user.getRole());
 
 		return userDTO;
 	}
@@ -78,6 +78,7 @@ public class AppService {
 		
 		List<Game> gameList = db.getGames();
 		List<UserDTO> userList = new ArrayList<>();
+		List<LocationDTO> locationList = new ArrayList<>();
 		
 		for(int index = 0; index < gameList.size();index++)
 		{
@@ -92,6 +93,22 @@ public class AppService {
 			User secondUser = db.getUserByID(secondUserID);
 			UserDTO secondUserDTO = convertUserToUserDTO(secondUser);
 			
+			int locationID = currentGame.getGameLocationID();
+			
+			Location location = db.getLocationByID(locationID);
+			
+			LocationDTO locationDTO = new LocationDTO(locationID,location.getLocationName(),location.getLocationAddress(),location.getRentFeePerHour());
+			
+			GameDTO currentGameDTO = new GameDTO(currentGame.getGameID(),
+												 firstUserDTO,
+												 currentGame.getFirstUserScore(),
+												 secondUserDTO,
+												 currentGame.getSecondUserScore(),
+												 locationDTO	
+												);
+			gameDTOList.addTogameDTOList(currentGameDTO);
+			
+			/** userList */
 			boolean isfirstUserInList = false;
 			boolean isSecondUserInList = false;
 			
@@ -102,12 +119,10 @@ public class AppService {
 			}
 			else
 			{
-				
-				
 				for (int usersIndex = 0; usersIndex < userList.size(); usersIndex++)
 				{
-					UserDTO CurrentUserDTO = userList.get(usersIndex);
-					String currentUserName = CurrentUserDTO.getUserName();
+					UserDTO currentUserDTO = userList.get(usersIndex);
+					String currentUserName = currentUserDTO.getUserName();
 					
 					if(currentUserName.equals(firstUser.getUsername()))
 					{
@@ -135,25 +150,40 @@ public class AppService {
 				
 			}
 			
-			int locationID = currentGame.getGameLocationID();
+			/** locationList */
+			boolean isLocationInList = false;
 			
-			Location location = db.getLocationByID(locationID);
-			
-			LocationDTO locationDTO = new LocationDTO(locationID,location.getLocationName(),location.getLocationAddress(),location.getRentFeePerHour());
-			
-			GameDTO currentGameDTO = new GameDTO(currentGame.getGameID(),
-												 firstUserDTO,
-												 currentGame.getFirstUserScore(),
-												 secondUserDTO,
-												 currentGame.getSecondUserScore(),
-												 locationDTO	
-												);
-			gameDTOList.addTogameDTOList(currentGameDTO);
-			
+			if(locationList.size()==0)
+			{
+				locationList.add(locationDTO);
+			}
+			else
+			{
+				for (int locationIndex = 0; locationIndex < locationList.size(); locationIndex++)
+				{
+					LocationDTO currentLocationDTO = locationList.get(locationIndex);
+					String currentLocationName = currentLocationDTO.getLocationName();
+					
+					if(currentLocationName.equals(location.getLocationName()))
+					{
+						isLocationInList = true;
+						break;	
+					}
+				
+				}
+				
+			if (isLocationInList == false)
+			{
+				locationList.add(locationDTO);
+			}
+				
+			}
 		}
+		
 		gameDTOList.addUserDTOListTouserDTOList(userList);
 		
-		System.out.println("Userlist " + gameDTOList.getUserList());
+		gameDTOList.addLocationDTOToLocationList(locationList);
+
 		return gameDTOList;
 	}
 
@@ -173,5 +203,32 @@ public class AppService {
 		return gameDTOList;
 	}
 
-	
+	public GameDTOList getLocationByNameFromGameDTOList(int userID, String locationName) {
+		
+	GameDTOList gameDTOList = getGameDTOList(userID);
+		
+		for(int index = 0; index < gameDTOList.getGameDTOList().size();index++)
+		{
+			GameDTO currentGameDTO = gameDTOList.getGameDTOList().get(index);
+			if((currentGameDTO.getLocationDTO().getLocationName().equals(locationName)))
+			{
+				gameDTOList.addToSearchedLocation(currentGameDTO);
+			}
+		}
+		
+		return gameDTOList;
+	}
+
+	public UserDTO getUserByID(int userID) {
+		
+		UserDTO userDTO = null;
+		
+		User user = db.getUserByID(userID);
+		
+		userDTO = new UserDTO(user.getUserID(),user.getUsername(),user.isValidPassword(),user.getRole());
+		
+		return userDTO;
+	}
+
+
 }

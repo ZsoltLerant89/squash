@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import pti.sb_squash_mvc.dto.GameDTOList;
 import pti.sb_squash_mvc.dto.UserDTO;
+import pti.sb_squash_mvc.model.RolesOfUsers;
 import pti.sb_squash_mvc.service.AppService;
 
 @Controller
@@ -70,6 +71,8 @@ public class AppController {
 	{
 		
 		service.updatePasswordAndLogin(userID, password);
+		GameDTOList gameDTOList = service.getGameDTOList(userID);
+	  	model.addAttribute("gameDTOList", gameDTOList);
 
 		return "index.html";
 	}
@@ -83,9 +86,61 @@ public class AppController {
 		GameDTOList gameDTOList = service.getGameDTOList(userID);
 	  	model.addAttribute("gameDTOList", gameDTOList);
 	  	
-	  	GameDTOList searchList = service.getUserByNameFromGameDTOList(userID, userName);
-	  	model.addAttribute("searchList", searchList);
+	  	GameDTOList searchedUserList = service.getUserByNameFromGameDTOList(userID, userName);
+	  	model.addAttribute("searchedUserList", searchedUserList);
+	  	
+	  	
 		
 		return "index.html";
+	}
+	
+	@GetMapping("/index/searchlocation")
+	private String searchLocationByLocationName(Model model,
+												@RequestParam("userid") int userID,
+												@RequestParam("locationname") String locationName
+												)
+	{
+		
+		GameDTOList gameDTOList = service.getGameDTOList(userID);
+	  	model.addAttribute("gameDTOList", gameDTOList);
+		
+		GameDTOList searchedLocationList = service.getLocationByNameFromGameDTOList(userID, locationName);
+	  	model.addAttribute("searchedLocationList", searchedLocationList);
+		
+		return "index.html";
+	}
+	
+	@GetMapping("/index")
+	private String returnToIndex(Model model,
+								@RequestParam("userid") int userID			
+			)
+	{
+	
+		GameDTOList gameDTOList = service.getGameDTOList(userID);
+	  	model.addAttribute("gameDTOList", gameDTOList);
+
+		return "index.html";
+	}
+	
+	@GetMapping("/admin")
+	private String goToAdminPage(Model model,
+								@RequestParam("userid") int userID
+								)
+	{
+		String targetPage ="index.html";
+		
+		GameDTOList gameDTOList = service.getGameDTOList(userID);
+	  	model.addAttribute("gameDTOList", gameDTOList);
+		
+	  	UserDTO userDTO = service.getUserByID(userID);
+
+	  	RolesOfUsers role = RolesOfUsers.ADMIN;
+	  	
+		if (userDTO.getRole().equals(role))
+		{
+			targetPage = "admin.html";
+		}
+		
+		return targetPage;
 	}
 }
