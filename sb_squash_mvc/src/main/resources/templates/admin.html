@@ -5,7 +5,103 @@
 		<title>Admin</title>
 	</head>
 	<body>
-		<p>Welcome on admin Page !</p>
-		<a th:href="'/index?userid=' + ${gameDTOList.getUserID()}" ><button>Back to Index</button></a>
+		<h2>Welcome on the 'Admin Page' !</h2>
+		<div th:if="${adminDTO == null}")>
+			<a th:href="'/index?userid=' + ${1}" ><button>Back to Index</button></a>	
+		</div>
+		<div th:if="${adminDTO != null}")>
+			<a th:href="'/index?userid=' + ${adminDTO.getAdmin().getUserID()}" ><button>Back to Index</button></a>	
+		</div>
+		<br/>
+		<br/>
+		
+		<form action="/admin/reguser" method="post">
+			<h3>User registration</h3>
+		
+			<label for="username">User name:</label>
+			<input type="text" name="username"/>
+			<br/>
+			<br/>
+			
+			<label for="password">Password:</label>
+			<input type="text" name="password"/>
+			<br/>
+			<br/>
+			
+			<label for="role">Role:</label>
+			<input type="text" name="role"/>
+			<br/>
+			<br/>
+			
+			<input type="submit" value="Register" />
+		</form>
+		<br/>
+		<br/>
+		
+		<form action="/admin/reglocation" method="post">
+			<h3>Location registration</h3>
+			
+<!--  		<label for="userid">User ID:</label>
+			<input type="hidden" value="${userid}"/>
+			<br/>
+			<br/>
+-->			
+			<label for="locationname">Location name:</label>
+			<input type="text" name="locationname"/>
+			<br/>
+			<br/>
+			
+			<label for="locationaddress">Location address:</label>
+			<input type="text" name="locationaddress"/>
+			<br/>
+			<br/>
+			
+			<label for="rentfeeperhour">Rent fee/hour:</label>
+			<input type="text" name="rentfeeperhour"/>
+			<br/>
+			<br/>
+			
+			<input type="submit" value="Register" />
+			
+		</form>
+		<br/>
+		<br/>
+		
+		<form action="/admin/reggame" method="post">
+			<h3>Game registration</h3>
+			
+<!--  		<label for="userid">User ID:</label>
+			<input type="hidden" value="${userid}"/>
+			<br/>
+			<br/>
+-->			
+			<label for="firstuserid">First User ID:</label>
+			<input type="text" name="firstuserid"/>
+			<br/>
+			<br/>
+			
+			<label for="seconduserid">Second User ID:</label>
+			<input type="text" name="seconduserid"/>
+			<br/>
+			<br/>
+			
+			<label for="gamelocationid">Game Location ID:</label>
+			<input type="text" name="gamelocationid"/>
+			<br/>
+			<br/>
+			
+			<label for="firstuserscore">First User Score:</label>
+			<input type="text" name="firstuserscore"/>
+			<br/>
+			<br/>
+			
+			<label for="seconduserscore">Second User Score:</label>
+			<input type="text" name="seconduserscore"/>
+			<br/>
+			<br/>
+			
+			<input type="submit" value="Register" />
+		</form>
+		
 	</body>
 </html>

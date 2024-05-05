@@ -30,6 +30,22 @@ public class Game {
 	
 	@Column(name = "seconduserscore")
 	private int secondUserScore;
+	
+	
+	public Game()
+	{
+		
+	}
+	
+
+	public Game(int firstUserID, int secondUserID, int gameLocationID, int firstUserScore, int secondUserScore) {
+		super();
+		this.firstUserID = firstUserID;
+		this.secondUserID = secondUserID;
+		this.gameLocationID = gameLocationID;
+		this.firstUserScore = firstUserScore;
+		this.secondUserScore = secondUserScore;
+	}
 
 	public int getGameID() {
 		return gameID;

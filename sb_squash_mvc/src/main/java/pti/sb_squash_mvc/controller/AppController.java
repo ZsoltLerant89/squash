@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import pti.sb_squash_mvc.dto.AdminDTO;
 import pti.sb_squash_mvc.dto.GameDTOList;
 import pti.sb_squash_mvc.dto.UserDTO;
 import pti.sb_squash_mvc.model.RolesOfUsers;
@@ -118,7 +119,7 @@ public class AppController {
 	
 		GameDTOList gameDTOList = service.getGameDTOList(userID);
 	  	model.addAttribute("gameDTOList", gameDTOList);
-
+	  	
 		return "index.html";
 	}
 	
@@ -133,9 +134,9 @@ public class AppController {
 	  	model.addAttribute("gameDTOList", gameDTOList);
 		
 	  	UserDTO userDTO = service.getUserByID(userID);
-
+	  	model.addAttribute("userDTO",userDTO);
+	  
 	  	RolesOfUsers role = RolesOfUsers.ADMIN;
-	  	
 		if (userDTO.getRole().equals(role))
 		{
 			targetPage = "admin.html";
@@ -143,4 +144,33 @@ public class AppController {
 		
 		return targetPage;
 	}
+	
+	@PostMapping("/admin/reguser")
+	private String registerUser(Model model,
+//								@RequestParam("userid") int userID,
+								@RequestParam("username") String userName,
+								@RequestParam("password") String password,
+								@RequestParam ("role") RolesOfUsers role
+								)
+	{
+		
+		
+		AdminDTO adminDTO = service.regUser(1,userName,password,role);
+		model.addAttribute("adminDTO",adminDTO);
+		
+		return "admin.html";
+	}
+	
+	@PostMapping("/admin/reglocation")
+	private String registerGame(Model model,
+								@RequestParam("locationname") String locationName,
+								@RequestParam("locationaddress") String locationAddress,
+								@RequestParam("rentfeeperhour") int rentFeePerHour
+								)
+	{
+		AdminDTO adminDTO = service.regGame(1,locationName,locationAddress,rentFeePerHour);
+		model.addAttribute("adminDTO",adminDTO);
+		return "admin.html";
+	}
 }
+

@@ -111,4 +111,27 @@ public class Database {
 		return location;
 	}
 
+	public void persistUser(User user) {
+		
+		Session session = sessionFactory.openSession();
+		Transaction tx = session.beginTransaction();
+		
+		session.persist(user);
+		
+		tx.commit();
+		session.close();
+		
+	}
+
+	public void persistLocation(Location location) {
+		Session session = sessionFactory.openSession();
+		Transaction tx = session.beginTransaction();
+		
+		session.persist(location);
+		
+		tx.commit();
+		session.close();
+		
+	}
+
 }

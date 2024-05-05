@@ -33,6 +33,20 @@ public class User {
 	
 	@Column(name = "loggedin")
 	private boolean loggedin;
+	
+	
+	public User()
+	{
+		
+	}
+	
+
+	public User(String username, String password, RolesOfUsers role) {
+		super();
+		this.username = username;
+		this.password = password;
+		this.role = role;
+	}
 
 	public int getUserID() {
 		return userID;

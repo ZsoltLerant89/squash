@@ -7,12 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import pti.sb_squash_mvc.db.Database;
+import pti.sb_squash_mvc.dto.AdminDTO;
 import pti.sb_squash_mvc.dto.GameDTO;
 import pti.sb_squash_mvc.dto.GameDTOList;
 import pti.sb_squash_mvc.dto.LocationDTO;
 import pti.sb_squash_mvc.dto.UserDTO;
 import pti.sb_squash_mvc.model.Game;
 import pti.sb_squash_mvc.model.Location;
+import pti.sb_squash_mvc.model.RolesOfUsers;
 import pti.sb_squash_mvc.model.User;
 
 @Service
@@ -228,6 +230,33 @@ public class AppService {
 		userDTO = new UserDTO(user.getUserID(),user.getUsername(),user.isValidPassword(),user.getRole());
 		
 		return userDTO;
+	}
+
+	public AdminDTO regUser(int userID, String userName, String password, RolesOfUsers role) {
+		AdminDTO adminDTO = null;
+		
+		User user = new User(userName,password,role);
+		db.persistUser(user);
+		User admin = db.getUserByID(userID);
+		UserDTO adminUserDTO = new UserDTO(userID,admin.getUsername(),admin.isValidPassword(),admin.getRole());
+		
+		adminDTO = new AdminDTO(adminUserDTO);
+		
+		return adminDTO;
+	}
+
+	public AdminDTO regGame(int userID, String locationName, String locationAddress, int rentFeePerHour) {
+		AdminDTO adminDTO = null;
+		
+		Location location = new Location(locationName,locationAddress,rentFeePerHour);
+		db.persistLocation(location);
+		
+		User admin = db.getUserByID(userID);
+		UserDTO adminUserDTO = new UserDTO(userID,admin.getUsername(),admin.isValidPassword(),admin.getRole());
+		
+		adminDTO = new AdminDTO(adminUserDTO);
+		
+		return adminDTO;
 	}
 
 

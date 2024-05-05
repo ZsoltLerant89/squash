@@ -24,6 +24,20 @@ public class Location {
 	
 	@Column(name = "rentfeeperhour")
 	private int rentFeePerHour;
+	
+	
+	public Location()
+	{
+		
+	}
+	
+
+	public Location(String locationName, String locationAddress, int rentFeePerHour) {
+		super();
+		this.locationName = locationName;
+		this.locationAddress = locationAddress;
+		this.rentFeePerHour = rentFeePerHour;
+	}
 
 	public int getLocationID() {
 		return locationID;

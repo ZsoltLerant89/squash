@@ -23,7 +23,11 @@
 	<body>
 		<div th:if="${gameDTOList != null}">
 			<a th:href="'/admin?userid=' + ${gameDTOList.getUserID()}" ><button>Admin</button></a>
+			<div th:if="${userDTO != null }">
+				<p th:if="${userDTO.getRole().name() != 'ADMIN' }" th:text="${'(You are not admin!)'}"></p>
+			</div> 	
 		</div>
+		
 		<table th:if="${searchedUserList == null && searchedLocationList == null}">
 			<tr>
 				<th>Game ID</th>
@@ -110,7 +114,7 @@
 		</div>
 		<br/>
 		<div th:if="${searchedUserList != null || searchedLocationList != null}">
-			<a th:href="'/index?userid=' + ${gameDTOList.getUserID()}" ><button>Back to Index</button></a>
+			<a th:href="'/index?userid=' + ${gameDTOList.getUserID()}" ><button>Delete order</button></a>
 		</div>
 	
 		
