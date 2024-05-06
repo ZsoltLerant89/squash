@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import pti.sb_squash_mvc.dto.AdminDTO;
 import pti.sb_squash_mvc.dto.GameDTOList;
 import pti.sb_squash_mvc.dto.UserDTO;
+import pti.sb_squash_mvc.model.Game;
 import pti.sb_squash_mvc.model.RolesOfUsers;
 import pti.sb_squash_mvc.service.AppService;
 
@@ -42,21 +43,25 @@ public class AppController {
 			
 		if (userDTO != null)
 		{
-		  if (userDTO.isValidPassword() == false)
-		  {
-
-		  	model.addAttribute("userDTO", userDTO);
-		  	targetPage = "firstlogin.html";
-		 
-		  }
-		  else
-		  {
-
-		  	GameDTOList gameDTOList = service.getGameDTOList(userDTO.getUserID());
-		  	model.addAttribute("gameDTOList", gameDTOList);
-		  	model.addAttribute("userDTO", userDTO);
-		  	targetPage = "index.html";
-		  }
+			model.addAttribute("userDTO", userDTO);
+			  if (userDTO.isValidPassword() == false)
+			  {
+			  	targetPage = "firstlogin.html";
+			 
+			  }
+			  else
+			  {
+				
+			  	GameDTOList gameDTOList = service.getGameDTOList(userDTO.getUserID(),null);
+			  	
+			  	if(gameDTOList != null)
+			  	{
+				  	model.addAttribute("gameDTOList", gameDTOList);
+				  	
+				  	targetPage = "index.html";
+			  	}
+			  	
+			  }
 		  
 		}
 		
@@ -70,12 +75,18 @@ public class AppController {
 								@RequestParam("password") String password
 			)
 	{
-		
+		String targetPage = "login.html";
 		service.updatePasswordAndLogin(userID, password);
-		GameDTOList gameDTOList = service.getGameDTOList(userID);
-	  	model.addAttribute("gameDTOList", gameDTOList);
+		
+		GameDTOList gameDTOList = service.getGameDTOList(userID,null);
+		
+		if(gameDTOList != null)
+		{
+			model.addAttribute("gameDTOList", gameDTOList);
+			targetPage = "index.html";
+		}
 
-		return "index.html";
+		return targetPage;
 	}
 	
 	@GetMapping("/index/searchuser")
@@ -84,15 +95,17 @@ public class AppController {
 									@RequestParam("username") String userName 
 									)
 	{
-		GameDTOList gameDTOList = service.getGameDTOList(userID);
-	  	model.addAttribute("gameDTOList", gameDTOList);
-	  	
-	  	GameDTOList searchedUserList = service.getUserByNameFromGameDTOList(userID, userName);
-	  	model.addAttribute("searchedUserList", searchedUserList);
-	  	
-	  	
+		String targetPage = "login.html";
 		
-		return "index.html";
+		GameDTOList gameDTOList = service.getGameDTOList(userID,userName);
+		
+		if(gameDTOList != null)
+		{
+			model.addAttribute("gameDTOList", gameDTOList);
+			targetPage = "index.html";
+		}
+		
+		return targetPage;
 	}
 	
 	@GetMapping("/index/searchlocation")
@@ -101,14 +114,17 @@ public class AppController {
 												@RequestParam("locationname") String locationName
 												)
 	{
+		String targetPage ="login.html";
 		
-		GameDTOList gameDTOList = service.getGameDTOList(userID);
-	  	model.addAttribute("gameDTOList", gameDTOList);
+		GameDTOList gameDTOList = service.getGameDTOList(userID,locationName);
 		
-		GameDTOList searchedLocationList = service.getLocationByNameFromGameDTOList(userID, locationName);
-	  	model.addAttribute("searchedLocationList", searchedLocationList);
+		if(gameDTOList != null)
+		{
+			model.addAttribute("gameDTOList", gameDTOList);
+			targetPage = "index.html";
+		}
 		
-		return "index.html";
+		return targetPage;
 	}
 	
 	@GetMapping("/index")
@@ -116,11 +132,15 @@ public class AppController {
 								@RequestParam("userid") int userID			
 			)
 	{
-	
-		GameDTOList gameDTOList = service.getGameDTOList(userID);
-	  	model.addAttribute("gameDTOList", gameDTOList);
-	  	
-		return "index.html";
+		String targetPage = "login.html";
+		
+		GameDTOList gameDTOList = service.getGameDTOList(userID,null);
+		if(gameDTOList != null)
+		{
+			model.addAttribute("gameDTOList", gameDTOList);
+			targetPage = "index.html";
+		}
+		return targetPage;
 	}
 	
 	@GetMapping("/admin")
@@ -128,57 +148,67 @@ public class AppController {
 								@RequestParam("userid") int userID
 								)
 	{
-		String targetPage ="index.html";
+		String targetPage ="login.html";
 		
-		GameDTOList gameDTOList = service.getGameDTOList(userID);
-	  	model.addAttribute("gameDTOList", gameDTOList);
-		
-	  	UserDTO userDTO = service.getUserByID(userID);
-	  	model.addAttribute("userDTO",userDTO);
-	  	
-	  	
-	  
-	  	RolesOfUsers role = RolesOfUsers.ADMIN;
-		if (userDTO.getRole().equals(role))
+		GameDTOList gameDTOList = service.getGameDTOList(userID,null);
+		if(gameDTOList != null)
 		{
-			AdminDTO adminDTO = service.getAdminDTO(userID);
-		  	model.addAttribute(adminDTO);
-			targetPage = "admin.html";
+		  	model.addAttribute("gameDTOList", gameDTOList);
+			
+		  	UserDTO userDTO = service.getUserByID(userID);
+		  	model.addAttribute("userDTO",userDTO);
+		  	
+		  	targetPage = "index.html";
+			 
+		  	RolesOfUsers role = RolesOfUsers.ADMIN;
+			if (userDTO.getRole().equals(role))
+			{
+				AdminDTO adminDTO = service.getAdminDTO(userID);
+			  	model.addAttribute("adminDTO", adminDTO);
+				targetPage = "admin.html";
+			}
 		}
 		
 		return targetPage;
 	}
 	
 	@PostMapping("/admin/reguser")
-	private String regUser(Model model,
-//								@RequestParam("userid") int userID,
-								@RequestParam("username") String userName,
-								@RequestParam("password") String password,
-								@RequestParam ("role") RolesOfUsers role
-								)
+	private String regUser(	Model model,
+							@RequestParam("userid") int userID,
+							@RequestParam("username") String userName,
+							@RequestParam("password") String password,
+							@RequestParam ("role") RolesOfUsers role
+							)
 	{
 		
+		String targetPage = "login.html";
 		
-		AdminDTO adminDTO = service.regUser(1,userName,password,role);
-		model.addAttribute("adminDTO",adminDTO);
-		
-		return "admin.html";
+		AdminDTO adminDTO = service.regUser(userID,userName,password,role);	
+		if(adminDTO != null)
+		{
+			model.addAttribute("adminDTO",adminDTO);
+			targetPage = "admin.html";
+		}
+		return targetPage;
 	}
 	
 	@PostMapping("/admin/reglocation")
-	private String regLocation(Model model,
+	private String regLocation( Model model,
+								@RequestParam("userid") int userID,
 								@RequestParam("locationname") String locationName,
 								@RequestParam("locationaddress") String locationAddress,
 								@RequestParam("rentfeeperhour") int rentFeePerHour
 								)
 	{
-		AdminDTO adminDTO = service.regLocation(1,locationName,locationAddress,rentFeePerHour);
+		AdminDTO adminDTO = service.regLocation(userID,locationName,locationAddress,rentFeePerHour);
 		model.addAttribute("adminDTO",adminDTO);
+		
 		return "admin.html";
 	}
 	
 	@PostMapping("/admin/reggame")
 	private String regGame(Model model, 
+						  @RequestParam("userid") int userID,
 						  @RequestParam("firstuserid") int firstUserID,
 						  @RequestParam("seconduserid") int secondUserID,
 						  @RequestParam("gamelocationid") int gameLocationID,
@@ -187,7 +217,7 @@ public class AppController {
 						  )
 	{
 		
-		AdminDTO adminDTO = service.regGame(1,firstUserID,secondUserID,gameLocationID,firstUserScore,secondUserScore);
+		AdminDTO adminDTO = service.regGame(userID,firstUserID,secondUserID,gameLocationID,firstUserScore,secondUserScore);
 		model.addAttribute("adminDTO",adminDTO);
 		
 		

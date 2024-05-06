@@ -18,6 +18,8 @@
 		<form action="/admin/reguser" method="post">
 			<h3>User registration</h3>
 		
+			<input type="hidden"  th:value="${adminDTO.getAdmin().getUserID()}" name="userid"/>
+			
 			<label for="username">User name:</label>
 			<input type="text" name="username"/>
 			<br/>
@@ -41,11 +43,8 @@
 		<form action="/admin/reglocation" method="post">
 			<h3>Location registration</h3>
 			
-<!--  		<label for="userid">User ID:</label>
-			<input type="hidden" value="${userid}"/>
-			<br/>
-			<br/>
--->			
+  			<input type="hidden"  th:value="${adminDTO.getAdmin().getUserID()}" name="userid"/>
+			
 			<label for="locationname">Location name:</label>
 			<input type="text" name="locationname"/>
 			<br/>
@@ -69,6 +68,8 @@
 		
 		<form action="/admin/reggame" method="post" >
 			<h3>Game registration</h3>
+			
+			<input type="hidden"  th:value="${adminDTO.getAdmin().getUserID()}" name="userid"/>
 			
 			<label >First User: </label>
 			<select name="firstuserid">

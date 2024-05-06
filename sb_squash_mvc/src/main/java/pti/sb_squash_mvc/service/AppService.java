@@ -32,7 +32,7 @@ public class AppService {
 		
 		UserDTO userDTO = null;
 		
-		User user = db.getUserByNameAndPassword(userName,password);
+		User user = db.getUserByNameAndPassword(userName, password);
 	
 		if(user != null)
 		{
@@ -48,8 +48,8 @@ public class AppService {
 		return userDTO;
 	}
 	
-	public GameDTOList updatePasswordAndLogin(int userID, String password) {
-		
+	public GameDTOList updatePasswordAndLogin(int userID, String password) 
+	{
 		GameDTOList gameDTOList = null;
 		
 		User user = db.getUserByID(userID);
@@ -61,230 +61,253 @@ public class AppService {
 			user.setLoggedin(true);
 			db.updateUser(user);
 		}
-		
-		
-		
+	
 		return gameDTOList;
 	}
 
 	public UserDTO convertUserToUserDTO(User user)
 	{
-		UserDTO userDTO = new UserDTO(user.getUserID(),user.getUsername(),user.isValidPassword(),user.getRole());
+		UserDTO userDTO = new UserDTO(user.getUserID(),
+									  user.getUsername(),
+									  user.isValidPassword(),
+									  user.getRole()
+									  );
 
 		return userDTO;
 	}
 	
-	public GameDTOList getGameDTOList(int userID) {
+	public GameDTOList getGameDTOList(int userID, String userName) {
 		
-		GameDTOList gameDTOList = new GameDTOList(userID);
+		User user = db.getUserByID(userID);
+		GameDTOList gameDTOList = null ;
 		
-		List<Game> gameList = db.getGames();
-		List<UserDTO> userList = new ArrayList<>();
-		List<LocationDTO> locationList = new ArrayList<>();
-		
-		for(int index = 0; index < gameList.size();index++)
+		if ((user != null) && user.isLoggedin() == true )
 		{
-			Game currentGame = gameList.get(index);
+		
+			gameDTOList = new GameDTOList(userID);
 			
-			int firstUserID = currentGame.getFirstUserID();
-			int secondUserID = currentGame.getSecondUserID();
+			List<Game> gameList = db.getGames();
 			
-			User firstUser = db.getUserByID(firstUserID);
-			UserDTO firstUserDTO = convertUserToUserDTO(firstUser);
+			List<User> userList = null;
+			List<UserDTO> userDTOList = null;
 			
-			User secondUser = db.getUserByID(secondUserID);
-			UserDTO secondUserDTO = convertUserToUserDTO(secondUser);
+			List<Location> locationList = null;
+			List<LocationDTO> locationDTOList = null;
 			
-			int locationID = currentGame.getGameLocationID();
-			
-			Location location = db.getLocationByID(locationID);
-			
-			LocationDTO locationDTO = new LocationDTO(locationID,location.getLocationName(),location.getLocationAddress(),location.getRentFeePerHour());
-			
-			GameDTO currentGameDTO = new GameDTO(currentGame.getGameID(),
-												 firstUserDTO,
-												 currentGame.getFirstUserScore(),
-												 secondUserDTO,
-												 currentGame.getSecondUserScore(),
-												 locationDTO	
-												);
-			gameDTOList.addTogameDTOList(currentGameDTO);
-			
-			/** userList */
-			boolean isfirstUserInList = false;
-			boolean isSecondUserInList = false;
-			
-			if(userList.size()==0)
+			for(int index = 0; index < gameList.size();index++)
 			{
-				userList.add(firstUserDTO);
-				userList.add(secondUserDTO);
-			}
-			else
-			{
-				for (int usersIndex = 0; usersIndex < userList.size(); usersIndex++)
-				{
-					UserDTO currentUserDTO = userList.get(usersIndex);
-					String currentUserName = currentUserDTO.getUserName();
-					
-					if(currentUserName.equals(firstUser.getUsername()))
-					{
-						isfirstUserInList = true;
-						break;	
-					}
-					else if(currentUserName.equals(secondUser.getUsername()))
-					{
-						isSecondUserInList = true;
-						break;
-
-					}
+				Game currentGame = gameList.get(index);
 				
+				int firstUserID = currentGame.getFirstUserID();
+				int secondUserID = currentGame.getSecondUserID();
+				
+				User firstUser = db.getUserByID(firstUserID);
+				UserDTO firstUserDTO = convertUserToUserDTO(firstUser);
+				
+				User secondUser = db.getUserByID(secondUserID);
+				UserDTO secondUserDTO = convertUserToUserDTO(secondUser);
+				
+				int locationID = currentGame.getGameLocationID();
+				
+				Location location = db.getLocationByID(locationID);
+				
+				LocationDTO locationDTO = new LocationDTO(	locationID,
+															location.getLocationName(),
+															location.getLocationAddress(),
+															location.getRentFeePerHour()
+															);
+				
+				if(	(firstUserDTO.getUserName().equals(userName)) || 
+					(secondUserDTO.getUserName().equals(userName)) || 
+					(userName == null)
+					)
+				{	
+					GameDTO currentGameDTO = new GameDTO(currentGame.getGameID(),
+														 firstUserDTO,
+														 currentGame.getFirstUserScore(),
+														 secondUserDTO,
+														 currentGame.getSecondUserScore(),
+														 locationDTO	
+														);
+					
+					gameDTOList.addTogameDTOList(currentGameDTO);
+				}
+				else if((locationDTO.getLocationName().equals(userName)) || 
+						(userName == null)
+						)
+				{	
+					GameDTO currentGameDTO = new GameDTO(currentGame.getGameID(),
+														 firstUserDTO,
+														 currentGame.getFirstUserScore(),
+														 secondUserDTO,
+														 currentGame.getSecondUserScore(),
+														 locationDTO	
+														);
+					gameDTOList.addTogameDTOList(currentGameDTO);
 				}
 				
-			if (isfirstUserInList == false)
-			{
-				userList.add(firstUserDTO);
-			}
-			
-			if (isSecondUserInList == false)
-			{
-				userList.add(secondUserDTO);
-			}
 				
-			}
-			
-			/** locationList */
-			boolean isLocationInList = false;
-			
-			if(locationList.size()==0)
-			{
-				locationList.add(locationDTO);
-			}
-			else
-			{
-				for (int locationIndex = 0; locationIndex < locationList.size(); locationIndex++)
+				userList = new ArrayList<>();
+				userDTOList = new ArrayList<>();
+				
+				userList = db.getUsers();
+				
+				locationList = new ArrayList<>();
+				locationDTOList = new ArrayList<>();
+				
+				locationList = db.getLocations();
+				
+				for(int userIndex = 0; userIndex < userList.size(); userIndex++)
 				{
-					LocationDTO currentLocationDTO = locationList.get(locationIndex);
-					String currentLocationName = currentLocationDTO.getLocationName();
+					User currentUser = userList.get(userIndex);
+					UserDTO currentUserDTO = new UserDTO(currentUser.getUserID(),
+														 currentUser.getUsername(),
+														 currentUser.isValidPassword(),
+														 currentUser.getRole());
 					
-					if(currentLocationName.equals(location.getLocationName()))
-					{
-						isLocationInList = true;
-						break;	
-					}
-				
+					userDTOList.add(currentUserDTO);	
 				}
 				
-			if (isLocationInList == false)
-			{
-				locationList.add(locationDTO);
-			}
-				
-			}
-		}
+				for(int locationIndex = 0; locationIndex < locationList.size(); locationIndex++)
+				{
+					
+					Location currentLocation = locationList.get(locationIndex);
+					LocationDTO currentLocationDTO = new LocationDTO(currentLocation.getLocationID(),
+																	 currentLocation.getLocationName(),
+																	 currentLocation.getLocationAddress(),
+																	 currentLocation.getRentFeePerHour()
+																	 );
+					
+					locationDTOList.add(currentLocationDTO);	
+				}
+			
+				gameDTOList.setUserList(userDTOList);
+				gameDTOList.setLocationList(locationDTOList);
 		
-		gameDTOList.addUserDTOListTouserDTOList(userList);
-		
-		gameDTOList.addLocationDTOToLocationList(locationList);
+			 }
 
-		return gameDTOList;
-	}
-
-	public GameDTOList getUserByNameFromGameDTOList(int userID,String userName) {
-		
-		GameDTOList gameDTOList = getGameDTOList(userID);
-		
-		for(int index = 0; index < gameDTOList.getGameDTOList().size();index++)
-		{
-			GameDTO currentGameDTO = gameDTOList.getGameDTOList().get(index);
-			if((currentGameDTO.getFirstUserDTO().getUserName().equals(userName)) || (currentGameDTO.getSecondUserDTO().getUserName().equals(userName)))
-			{
-				gameDTOList.addToSearchedUser(currentGameDTO);	
-			}
 		}
 		
 		return gameDTOList;
 	}
 
-	public GameDTOList getLocationByNameFromGameDTOList(int userID, String locationName) {
-		
-	GameDTOList gameDTOList = getGameDTOList(userID);
-		
-		for(int index = 0; index < gameDTOList.getGameDTOList().size();index++)
-		{
-			GameDTO currentGameDTO = gameDTOList.getGameDTOList().get(index);
-			if((currentGameDTO.getLocationDTO().getLocationName().equals(locationName)))
-			{
-				gameDTOList.addToSearchedLocation(currentGameDTO);
-			}
-		}
-		
-		return gameDTOList;
-	}
-
-	public UserDTO getUserByID(int userID) {
-		
+	public UserDTO getUserByID(int userID) 
+	{
 		UserDTO userDTO = null;
 		
 		User user = db.getUserByID(userID);
 		
-		userDTO = new UserDTO(user.getUserID(),user.getUsername(),user.isValidPassword(),user.getRole());
+		userDTO = new UserDTO(	user.getUserID(),
+								user.getUsername(),
+								user.isValidPassword(),
+								user.getRole()
+								);
 		
 		return userDTO;
 	}
 
-	public AdminDTO regUser(int userID, String userName, String password, RolesOfUsers role) {
+	public AdminDTO regUser(int userID,
+							String userName, 
+							String password, 
+							RolesOfUsers role
+							) 
+	{
 		AdminDTO adminDTO = null;
 		
 		User user = new User(userName,password,role);
 		db.persistUser(user);
 		User admin = db.getUserByID(userID);
-		UserDTO adminUserDTO = new UserDTO(userID,admin.getUsername(),admin.isValidPassword(),admin.getRole());
+		UserDTO adminUserDTO = new UserDTO(	userID,
+											admin.getUsername(),
+											admin.isValidPassword(),
+											admin.getRole()
+											);
 		
-		adminDTO = new AdminDTO(adminUserDTO);
+		adminDTO = getAdminDTO(userID);
+		adminDTO.setAdmin(adminUserDTO);
+		
 		
 		return adminDTO;
 	}
 
-	public AdminDTO regLocation(int userID, String locationName, String locationAddress, int rentFeePerHour) {
+	public AdminDTO regLocation(int userID,
+								String locationName,
+								String locationAddress,
+								int rentFeePerHour
+								) 
+	{
 		AdminDTO adminDTO = null;
 		
-		Location location = new Location(locationName,locationAddress,rentFeePerHour);
+		Location location = new Location(locationName,
+										 locationAddress,
+										 rentFeePerHour
+										 );
 		db.persistLocation(location);
 		
 		User admin = db.getUserByID(userID);
-		UserDTO adminUserDTO = new UserDTO(userID,admin.getUsername(),admin.isValidPassword(),admin.getRole());
 		
-		adminDTO = new AdminDTO(adminUserDTO);
+		UserDTO adminUserDTO = new UserDTO(	userID,
+											admin.getUsername(), 
+											admin.isValidPassword(), 
+											admin.getRole()
+											);
+		
+		adminDTO = getAdminDTO(userID);
+		adminDTO.setAdmin(adminUserDTO);
+	
 		
 		return adminDTO;
 	}
 
-	public AdminDTO regGame(int userID, int firstUserID, int secondUserID, int gameLocationID, int firstUserScore,
-			int secondUserScore) {
+	public AdminDTO regGame(int userID, 
+							int firstUserID, 
+							int secondUserID, 
+							int gameLocationID, 
+							int firstUserScore,
+							int secondUserScore
+							) 
+	{
 		AdminDTO adminDTO = null;
 		
-		Game game = new Game(firstUserID, secondUserID, gameLocationID, firstUserScore, secondUserScore);
+		Game game = new Game(firstUserID,
+							 secondUserID, 
+							 gameLocationID, 
+							 firstUserScore, 
+							 secondUserScore
+							 );
+		
 		db.persistGame(game);
 		
 		User admin = db.getUserByID(userID);
-		UserDTO adminUserDTO = new UserDTO(userID,admin.getUsername(),admin.isValidPassword(),admin.getRole());
+		UserDTO adminUserDTO = new UserDTO( userID,
+											admin.getUsername(),
+											admin.isValidPassword(),
+											admin.getRole()
+											);
 		
-		GameDTOList gameDTOList = getGameDTOList(userID);
+		GameDTOList gameDTOList = getGameDTOList(userID,null);
 		List<UserDTO> userlist = gameDTOList.getUserList();
 		
-		adminDTO = new AdminDTO(adminUserDTO);
+		
+		adminDTO = getAdminDTO(userID);
+		adminDTO.setAdmin(adminUserDTO);
 		adminDTO.setUserDTOList(userlist);
 		
 		return adminDTO;
 	}
 
-	public AdminDTO getAdminDTO(int userID) {
+	public AdminDTO getAdminDTO(int userID) 
+	{
 		AdminDTO adminDTO = null;
 		
 		User admin = db.getUserByID(userID);
-		UserDTO adminUserDTO = new UserDTO(userID,admin.getUsername(),admin.isValidPassword(),admin.getRole());
+		UserDTO adminUserDTO = new UserDTO(	userID,
+											admin.getUsername(),
+											admin.isValidPassword(),
+											admin.getRole()
+											);
 		
-		GameDTOList gameDTOList = getGameDTOList(userID);
+		GameDTOList gameDTOList = getGameDTOList(userID,null);
 		
 		List<UserDTO> userList = gameDTOList.getUserList();	
 		List<LocationDTO> locationList = gameDTOList.getLocationList();
@@ -296,6 +319,5 @@ public class AppService {
 		
 		return adminDTO;
 	}
-
-
+	
 }

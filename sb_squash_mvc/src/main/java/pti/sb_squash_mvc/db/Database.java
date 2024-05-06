@@ -9,6 +9,7 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.query.SelectionQuery;
 import org.springframework.stereotype.Repository;
 
+import pti.sb_squash_mvc.dto.UserDTO;
 import pti.sb_squash_mvc.model.Game;
 import pti.sb_squash_mvc.model.Location;
 import pti.sb_squash_mvc.model.User;
@@ -145,6 +146,34 @@ public class Database {
 		tx.commit();
 		session.close();
 		
+	}
+
+	public List<User> getUsers() {
+		
+		Session session = sessionFactory.openSession();
+		Transaction tx = session.beginTransaction();
+		
+		SelectionQuery<User> query = session.createSelectionQuery("SELECT u FROM User u",User.class);
+		List<User> userList = query.getResultList();
+		
+		tx.commit();
+		session.close();
+		
+		return userList;
+	}
+
+	public List<Location> getLocations() {
+		
+		Session session = sessionFactory.openSession();
+		Transaction tx = session.beginTransaction();
+		
+		SelectionQuery<Location> query = session.createSelectionQuery("SELECT l FROM Location l",Location.class);
+		List<Location> locationList = query.getResultList();
+		
+		tx.commit();
+		session.close();
+		
+		return locationList;
 	}
 
 }
