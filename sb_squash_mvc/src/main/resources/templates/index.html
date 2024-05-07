@@ -34,6 +34,8 @@
 				<th>Second user</th>
 				<th>Second user's score</th>
 				<th>Location</th>
+				<th>Rent fee/hour</th>
+				<th>Date</th>
 			</tr>
 			
 			<tr th:each="gameDTO : ${gameDTOList.getGameDTOList()}">
@@ -43,6 +45,8 @@
 				<td th:text="${gameDTO.getSecondUserDTO.getUserName()}"></td>
 				<td th:text="${gameDTO.getSecondUserScore()}"></td>
 				<td th:text="${gameDTO.getLocationDTO().getLocationName()}"></td>
+				<td th:text="${gameDTO.getLocationDTO().getRentFeePerHour()}"></td>
+				<td th:text="${gameDTO.getDate()}"></td>
 			</tr>
 		</table>
 	

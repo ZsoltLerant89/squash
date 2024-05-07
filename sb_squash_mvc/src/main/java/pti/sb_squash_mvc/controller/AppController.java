@@ -1,5 +1,7 @@
 package pti.sb_squash_mvc.controller;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -213,11 +215,12 @@ public class AppController {
 						  @RequestParam("seconduserid") int secondUserID,
 						  @RequestParam("gamelocationid") int gameLocationID,
 						  @RequestParam("firstuserscore") int firstUserScore,
-						  @RequestParam("seconduserscore") int secondUserScore
+						  @RequestParam("seconduserscore") int secondUserScore,
+						  @RequestParam("date") LocalDate date
 						  )
 	{
 		
-		AdminDTO adminDTO = service.regGame(userID,firstUserID,secondUserID,gameLocationID,firstUserScore,secondUserScore);
+		AdminDTO adminDTO = service.regGame(userID,firstUserID,secondUserID,gameLocationID,firstUserScore,secondUserScore,date);
 		model.addAttribute("adminDTO",adminDTO);
 		
 		

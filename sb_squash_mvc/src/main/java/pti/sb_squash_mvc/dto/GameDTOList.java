@@ -58,6 +58,27 @@ public class GameDTOList {
 		this.locationList = locationList;
 	}
 
+	
+	public void orderByDate()
+	{
+		for(int index = 0; index < gameDTOList.size(); index++) {
+			GameDTO actuelGameDTO = gameDTOList.get(index);
+			for(int nextIndex = index+1; nextIndex < gameDTOList.size(); nextIndex++)
+			{
+				GameDTO nextGameDTO = gameDTOList.get(nextIndex);
+				if(actuelGameDTO.getDate().compareTo(nextGameDTO.getDate()) < 0)
+				{
+					gameDTOList.set(index, nextGameDTO);
+					gameDTOList.set(nextIndex, actuelGameDTO);
+					
+					index = -1;
+					
+					break;
+				}
+			}
+		}
+	}
+	
 
 	@Override
 	public String toString() {

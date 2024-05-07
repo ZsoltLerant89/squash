@@ -1,5 +1,6 @@
 package pti.sb_squash_mvc.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -127,7 +128,8 @@ public class AppService {
 														 currentGame.getFirstUserScore(),
 														 secondUserDTO,
 														 currentGame.getSecondUserScore(),
-														 locationDTO	
+														 locationDTO,
+														 currentGame.getDate()
 														);
 					
 					gameDTOList.addTogameDTOList(currentGameDTO);
@@ -141,8 +143,10 @@ public class AppService {
 														 currentGame.getFirstUserScore(),
 														 secondUserDTO,
 														 currentGame.getSecondUserScore(),
-														 locationDTO	
+														 locationDTO,
+														 currentGame.getDate()
 														);
+				
 					gameDTOList.addTogameDTOList(currentGameDTO);
 				}
 				
@@ -185,9 +189,9 @@ public class AppService {
 				gameDTOList.setLocationList(locationDTOList);
 		
 			 }
-
+			
 		}
-		
+		gameDTOList.orderByDate();
 		return gameDTOList;
 	}
 
@@ -264,16 +268,19 @@ public class AppService {
 							int secondUserID, 
 							int gameLocationID, 
 							int firstUserScore,
-							int secondUserScore
+							int secondUserScore,
+							LocalDate date
 							) 
 	{
 		AdminDTO adminDTO = null;
 		
-		Game game = new Game(firstUserID,
+		Game game = new Game(0,
+							 firstUserID,
 							 secondUserID, 
 							 gameLocationID, 
 							 firstUserScore, 
-							 secondUserScore
+							 secondUserScore,
+							 date
 							 );
 		
 		db.persistGame(game);
@@ -319,5 +326,7 @@ public class AppService {
 		
 		return adminDTO;
 	}
+	
+	
 	
 }
