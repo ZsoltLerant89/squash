@@ -86,9 +86,4 @@ public class GameDTOList {
 				+ ", locationList=" + locationList + "]";
 	}
 
-
-	
-
-	
-	
 }

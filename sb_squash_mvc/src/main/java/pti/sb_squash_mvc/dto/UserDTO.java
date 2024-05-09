@@ -63,23 +63,4 @@ public class UserDTO {
 				+ role + "]";
 	}
 
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }

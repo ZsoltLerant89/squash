@@ -32,7 +32,11 @@ public class Location {
 	}
 	
 
-	public Location(String locationName, String locationAddress, int rentFeePerHour) {
+	public Location(String locationName,
+					String locationAddress,
+					int rentFeePerHour
+					) 
+	{
 		super();
 		this.locationName = locationName;
 		this.locationAddress = locationAddress;
@@ -70,8 +74,5 @@ public class Location {
 	public void setRentFeePerHour(int rentFeePerHour) {
 		this.rentFeePerHour = rentFeePerHour;
 	}
-	
-	
-	
 
 }

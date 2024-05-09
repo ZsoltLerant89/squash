@@ -9,7 +9,6 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.query.SelectionQuery;
 import org.springframework.stereotype.Repository;
 
-import pti.sb_squash_mvc.dto.UserDTO;
 import pti.sb_squash_mvc.model.Game;
 import pti.sb_squash_mvc.model.Location;
 import pti.sb_squash_mvc.model.User;

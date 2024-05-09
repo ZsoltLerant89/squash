@@ -96,13 +96,5 @@ public class GameDTO {
 				+ ", secondUserDTO=" + secondUserDTO + ", secondUserScore=" + secondUserScore + ", locationDTO="
 				+ locationDTO + ", date=" + date + "]";
 	}
-
-	
-	
-	
-	
-	
-	
-	
 	
 }

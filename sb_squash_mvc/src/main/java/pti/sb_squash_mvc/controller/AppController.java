@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import pti.sb_squash_mvc.dto.AdminDTO;
 import pti.sb_squash_mvc.dto.GameDTOList;
 import pti.sb_squash_mvc.dto.UserDTO;
-import pti.sb_squash_mvc.model.Game;
 import pti.sb_squash_mvc.model.RolesOfUsers;
 import pti.sb_squash_mvc.service.AppService;
 

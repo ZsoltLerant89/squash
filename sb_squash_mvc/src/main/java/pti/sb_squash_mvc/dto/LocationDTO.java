@@ -60,9 +60,5 @@ public class LocationDTO {
 		return "LocationDTO [locationID=" + locationID + ", locationName=" + locationName + ", locationAddress="
 				+ locationAddress + ", rentFeePerHour=" + rentFeePerHour + "]";
 	}
-	
-	
-	
-	
-	
+
 }

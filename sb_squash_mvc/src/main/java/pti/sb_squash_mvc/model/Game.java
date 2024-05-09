@@ -43,8 +43,15 @@ public class Game {
 	}
 	
 
-	public Game(int gameID, int firstUserID, int secondUserID, int gameLocationID, int firstUserScore,
-			int secondUserScore, LocalDate date) {
+	public Game(int gameID,
+				int firstUserID,
+				int secondUserID,
+				int gameLocationID,
+				int firstUserScore,
+				int secondUserScore,
+				LocalDate date
+				) 
+	{
 		super();
 		this.gameID = gameID;
 		this.firstUserID = firstUserID;
@@ -111,8 +118,5 @@ public class Game {
 	public void setDate(LocalDate date) {
 		this.date = date;
 	}
-	
-	
-	
 
 }

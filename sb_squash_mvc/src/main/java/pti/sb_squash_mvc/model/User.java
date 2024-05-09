@@ -41,7 +41,11 @@ public class User {
 	}
 	
 
-	public User(String username, String password, RolesOfUsers role) {
+	public User(String username,
+				String password,
+				RolesOfUsers role
+				) 
+	{
 		super();
 		this.username = username;
 		this.password = password;
@@ -96,8 +100,4 @@ public class User {
 		this.loggedin = loggedin;
 	}
 
-	
-	
-	
-	
 }

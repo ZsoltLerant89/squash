@@ -59,8 +59,5 @@ public class AdminDTO {
 		return "AdminDTO [userDTOList=" + userDTOList + ", locationDTOList=" + locationDTOList + ", admin=" + admin
 				+ "]";
 	}
-	
-	
-	
-	
+
 }
