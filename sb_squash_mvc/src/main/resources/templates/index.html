@@ -45,7 +45,7 @@
 				<td th:text="${gameDTO.getSecondUserDTO.getUserName()}"></td>
 				<td th:text="${gameDTO.getSecondUserScore()}"></td>
 				<td th:text="${gameDTO.getLocationDTO().getLocationName()}"></td>
-				<td th:text="${gameDTO.getLocationDTO().getRentFeePerHour()}"></td>
+				<td th:text="${gameDTO.getLocationDTO().getRentFeePerHour()}+ ' Ft' + ' / ' + ${gameDTO.getLocationDTO().getRentFeePerHourInEur()} + ' EUR'"></td>
 				<td th:text="${gameDTO.getDate()}"></td>
 			</tr>
 		</table>
@@ -73,5 +73,9 @@
 		<br/>
 		
 		<a th:href="'/index?userid=' + ${gameDTOList.getUserID()}" ><button>Clear order</button></a>
+		<br/>
+		<br/>
+		<a th:href="'/logout?userid=' + ${userDTO.getUserID()}" ><button>Logout</button></a>
+		
 	</body>
 </html>

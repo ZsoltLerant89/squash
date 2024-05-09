@@ -43,8 +43,7 @@ public class Game {
 	}
 	
 
-	public Game(int gameID,
-				int firstUserID,
+	public Game(int firstUserID,
 				int secondUserID,
 				int gameLocationID,
 				int firstUserScore,
@@ -53,7 +52,7 @@ public class Game {
 				) 
 	{
 		super();
-		this.gameID = gameID;
+		this.gameID = 0;
 		this.firstUserID = firstUserID;
 		this.secondUserID = secondUserID;
 		this.gameLocationID = gameLocationID;

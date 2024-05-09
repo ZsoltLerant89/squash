@@ -1,4 +1,4 @@
-package pti.sb_squash_rest.model;
+package pti.sb_squash_mvc.model;
 
 public class Currency {
 
@@ -28,10 +28,6 @@ public class Currency {
 	public void setValue(Double value) {
 		this.value = value;
 	}
-	
-	
-	
-	
 	
 	
 	

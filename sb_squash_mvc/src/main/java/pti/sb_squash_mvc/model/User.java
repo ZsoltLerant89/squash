@@ -47,9 +47,12 @@ public class User {
 				) 
 	{
 		super();
+		this.userID = 0;
 		this.username = username;
 		this.password = password;
 		this.role = role;
+		this.validPassword = false;
+		this.loggedin = false;
 	}
 
 	public int getUserID() {

@@ -98,6 +98,9 @@ public class AppController {
 	{
 		String targetPage = "login.html";
 		
+		UserDTO userDTO = service.getUserByID(userID);
+	  	model.addAttribute("userDTO",userDTO);
+		
 		GameDTOList gameDTOList = service.getGameDTOList(userID,userName);
 		
 		if(gameDTOList != null)
@@ -117,6 +120,9 @@ public class AppController {
 	{
 		String targetPage ="login.html";
 		
+		UserDTO userDTO = service.getUserByID(userID);
+	  	model.addAttribute("userDTO",userDTO);
+		
 		GameDTOList gameDTOList = service.getGameDTOList(userID,locationName);
 		
 		if(gameDTOList != null)
@@ -134,6 +140,9 @@ public class AppController {
 			)
 	{
 		String targetPage = "login.html";
+		
+		UserDTO userDTO = service.getUserByID(userID);
+	  	model.addAttribute("userDTO",userDTO);
 		
 		GameDTOList gameDTOList = service.getGameDTOList(userID,null);
 		if(gameDTOList != null)
@@ -224,6 +233,23 @@ public class AppController {
 		
 		
 		return "admin.html";
+	}
+	
+	@GetMapping("/logout")
+	private String logOut(Model model,
+						 @RequestParam("userid") int userID
+						 )
+	
+	{
+		String targetPage = "index.html";
+		UserDTO userDTO = service.logOut(userID);
+		if (userDTO != null)
+		{
+			model.addAttribute("userDTO", userDTO);
+			targetPage = "login.html";
+		}
+		
+		return targetPage;
 	}
 }
 

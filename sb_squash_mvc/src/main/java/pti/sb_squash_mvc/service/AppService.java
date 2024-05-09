@@ -3,9 +3,12 @@ package pti.sb_squash_mvc.service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
 
 import pti.sb_squash_mvc.db.Database;
 import pti.sb_squash_mvc.dto.AdminDTO;
@@ -13,6 +16,7 @@ import pti.sb_squash_mvc.dto.GameDTO;
 import pti.sb_squash_mvc.dto.GameDTOList;
 import pti.sb_squash_mvc.dto.LocationDTO;
 import pti.sb_squash_mvc.dto.UserDTO;
+import pti.sb_squash_mvc.model.Currency;
 import pti.sb_squash_mvc.model.Game;
 import pti.sb_squash_mvc.model.Location;
 import pti.sb_squash_mvc.model.RolesOfUsers;
@@ -55,7 +59,7 @@ public class AppService {
 		
 		User user = db.getUserByID(userID);
 		
-		if(user != null)
+		if ((user != null) && user.isLoggedin() == true )
 		{
 			user.setPassword(password);
 			user.setValidPassword(true);
@@ -95,6 +99,12 @@ public class AppService {
 			List<Location> locationList = null;
 			List<LocationDTO> locationDTOList = null;
 			
+			/** Currency */
+			
+			RestTemplate rt = new RestTemplate();
+			Currency currency = rt.getForObject("http://localhost:8081/geteuro", Currency.class);
+			
+			
 			for(int index = 0; index < gameList.size();index++)
 			{
 				Game currentGame = gameList.get(index);
@@ -112,10 +122,13 @@ public class AppService {
 				
 				Location location = db.getLocationByID(locationID);
 				
+				double rentFeePerHourInEur = (location.getRentFeePerHour() / currency.getValue());
+				
 				LocationDTO locationDTO = new LocationDTO(	locationID,
 															location.getLocationName(),
 															location.getLocationAddress(),
-															location.getRentFeePerHour()
+															location.getRentFeePerHour(),
+															rentFeePerHourInEur
 															);
 				
 				if(	(firstUserDTO.getUserName().equals(userName)) || 
@@ -145,52 +158,57 @@ public class AppService {
 														 currentGame.getSecondUserScore(),
 														 locationDTO,
 														 currentGame.getDate()
-														);
+														 );
 				
 					gameDTOList.addTogameDTOList(currentGameDTO);
 				}
 				
-				
-				userList = new ArrayList<>();
-				userDTOList = new ArrayList<>();
-				
-				userList = db.getUsers();
-				
-				locationList = new ArrayList<>();
-				locationDTOList = new ArrayList<>();
-				
-				locationList = db.getLocations();
-				
-				for(int userIndex = 0; userIndex < userList.size(); userIndex++)
-				{
-					User currentUser = userList.get(userIndex);
-					UserDTO currentUserDTO = new UserDTO(currentUser.getUserID(),
-														 currentUser.getUsername(),
-														 currentUser.isValidPassword(),
-														 currentUser.getRole());
-					
-					userDTOList.add(currentUserDTO);	
-				}
-				
-				for(int locationIndex = 0; locationIndex < locationList.size(); locationIndex++)
-				{
-					
-					Location currentLocation = locationList.get(locationIndex);
-					LocationDTO currentLocationDTO = new LocationDTO(currentLocation.getLocationID(),
-																	 currentLocation.getLocationName(),
-																	 currentLocation.getLocationAddress(),
-																	 currentLocation.getRentFeePerHour()
-																	 );
-					
-					locationDTOList.add(currentLocationDTO);	
-				}
+			}
 			
-				gameDTOList.setUserList(userDTOList);
-				gameDTOList.setLocationList(locationDTOList);
+			userList = new ArrayList<>();
+			userDTOList = new ArrayList<>();
+			
+			userList = db.getUsers();
+			
+			locationList = new ArrayList<>();
+			locationDTOList = new ArrayList<>();
+			
+			locationList = db.getLocations();
+			
+			for(int userIndex = 0; userIndex < userList.size(); userIndex++)
+			{
+				User currentUser = userList.get(userIndex);
+				UserDTO currentUserDTO = new UserDTO(currentUser.getUserID(),
+													 currentUser.getUsername(),
+													 currentUser.isValidPassword(),
+													 currentUser.getRole()
+													 );
+				
+				userDTOList.add(currentUserDTO);	
+			}
+			
+			for(int locationIndex = 0; locationIndex < locationList.size(); locationIndex++)
+			{
+				
+				Location currentLocation = locationList.get(locationIndex);
+				
+				double rentFeePerHourInEur = (currentLocation.getRentFeePerHour() / currency.getValue());
+				
+				LocationDTO currentLocationDTO = new LocationDTO(currentLocation.getLocationID(),
+																 currentLocation.getLocationName(),
+																 currentLocation.getLocationAddress(),
+																 currentLocation.getRentFeePerHour(),
+																 rentFeePerHourInEur
+																 );
+				
+				locationDTOList.add(currentLocationDTO);	
+			}
 		
-			 }
+			gameDTOList.setUserList(userDTOList);
+			gameDTOList.setLocationList(locationDTOList);
 			
 		}
+		
 		gameDTOList.orderByDate();
 		return gameDTOList;
 	}
@@ -201,11 +219,15 @@ public class AppService {
 		
 		User user = db.getUserByID(userID);
 		
+		if ((user != null) && user.isLoggedin() == true )
+		{
+		
 		userDTO = new UserDTO(	user.getUserID(),
 								user.getUsername(),
 								user.isValidPassword(),
 								user.getRole()
 								);
+		}
 		
 		return userDTO;
 	}
@@ -218,19 +240,18 @@ public class AppService {
 	{
 		AdminDTO adminDTO = null;
 		
-		User user = new User(userName,password,role);
-		db.persistUser(user);
-		User admin = db.getUserByID(userID);
-		UserDTO adminUserDTO = new UserDTO(	userID,
-											admin.getUsername(),
-											admin.isValidPassword(),
-											admin.getRole()
-											);
+		User user = db.getUserByID(userID);
 		
-		adminDTO = getAdminDTO(userID);
-		adminDTO.setAdmin(adminUserDTO);
+		if((user != null) && (user.isLoggedin() == true) && (user.getRole() == RolesOfUsers.ADMIN))
+		{	
+			adminDTO =  getAdminDTO(userID);
+			password = generateRandomChars ();
+			
+			User newUser = new User(userName,password,role);
+			db.persistUser(newUser);
+		}	
 		
-		
+
 		return adminDTO;
 	}
 
@@ -241,24 +262,19 @@ public class AppService {
 								) 
 	{
 		AdminDTO adminDTO = null;
+		User user = db.getUserByID(userID);
 		
-		Location location = new Location(locationName,
-										 locationAddress,
-										 rentFeePerHour
-										 );
-		db.persistLocation(location);
-		
-		User admin = db.getUserByID(userID);
-		
-		UserDTO adminUserDTO = new UserDTO(	userID,
-											admin.getUsername(), 
-											admin.isValidPassword(), 
-											admin.getRole()
-											);
-		
-		adminDTO = getAdminDTO(userID);
-		adminDTO.setAdmin(adminUserDTO);
-	
+		if((user != null) && (user.isLoggedin() == true) && (user.getRole() == RolesOfUsers.ADMIN))
+		{
+			adminDTO =  getAdminDTO(userID);
+			
+			Location newLocation = new Location(locationName,
+											 locationAddress,
+											 rentFeePerHour
+											 );
+			
+			db.persistLocation(newLocation);
+		}
 		
 		return adminDTO;
 	}
@@ -274,31 +290,24 @@ public class AppService {
 	{
 		AdminDTO adminDTO = null;
 		
-		Game game = new Game(0,
-							 firstUserID,
-							 secondUserID, 
-							 gameLocationID, 
-							 firstUserScore, 
-							 secondUserScore,
-							 date
-							 );
+		User user = db.getUserByID(userID);
 		
-		db.persistGame(game);
+		if((user != null) && (user.isLoggedin() == true) && (user.getRole() == RolesOfUsers.ADMIN))
+		{
+			adminDTO =  getAdminDTO(userID);
+			
+			Game game = new Game(
+								 firstUserID,
+								 secondUserID, 
+								 gameLocationID, 
+								 firstUserScore, 
+								 secondUserScore,
+								 date
+								 );
+			
+			db.persistGame(game);
 		
-		User admin = db.getUserByID(userID);
-		UserDTO adminUserDTO = new UserDTO( userID,
-											admin.getUsername(),
-											admin.isValidPassword(),
-											admin.getRole()
-											);
-		
-		GameDTOList gameDTOList = getGameDTOList(userID,null);
-		List<UserDTO> userlist = gameDTOList.getUserList();
-		
-		
-		adminDTO = getAdminDTO(userID);
-		adminDTO.setAdmin(adminUserDTO);
-		adminDTO.setUserDTOList(userlist);
+		}
 		
 		return adminDTO;
 	}
@@ -328,5 +337,36 @@ public class AppService {
 	}
 	
 	
-	
+   public static String generateRandomChars () {
+	  StringBuilder sb = new StringBuilder ();
+	   Random random = new Random ();
+	  
+	   String candidateChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+	   int length = 5;
+
+	   for (int i = 0; i < length; i ++) {
+		   sb.append (candidateChars.charAt (random.nextInt (candidateChars
+                .length ())));
+	   }
+
+	   return sb.toString ();
+    }
+
+	public UserDTO logOut(int userID) {
+		UserDTO userDTO = null;
+		
+		User user = db.getUserByID(userID);
+		
+		if ((user != null) && user.isLoggedin() == true )
+		{
+			user.setLoggedin(false);
+			
+			db.logOutUser(user);
+			
+			userDTO = convertUserToUserDTO(user);
+		}
+
+		return userDTO;
+	}
+
 }

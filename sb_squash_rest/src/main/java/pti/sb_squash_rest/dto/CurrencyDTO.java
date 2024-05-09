@@ -1,12 +1,12 @@
-package pti.sb_squash_rest.model;
+package pti.sb_squash_rest.dto;
 
-public class Currency {
+public class CurrencyDTO {
 
 	private String name;
 	private Double value;
 	
 	
-	public Currency(String name, Double value) {
+	public CurrencyDTO(String name, Double value) {
 		super();
 		this.name = name;
 		this.value = value;
@@ -28,6 +28,9 @@ public class Currency {
 	public void setValue(Double value) {
 		this.value = value;
 	}
+	
+	
+	
 	
 	
 	

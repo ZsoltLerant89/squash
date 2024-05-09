@@ -1,17 +1,22 @@
 package pti.sb_squash_mvc.dto;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class LocationDTO {
 
 	private int locationID;
 	private String locationName;
 	private String locationAddress;
 	private int rentFeePerHour;
+	private double rentFeePerHourInEur;
 	
 	
 	public LocationDTO(	int locationID,
 						String locationName, 
 						String locationAddress, 
-						int rentFeePerHour
+						int rentFeePerHour,
+						double rentFeePerHourInEur
 						) 
 	{
 		super();
@@ -19,6 +24,7 @@ public class LocationDTO {
 		this.locationName = locationName;
 		this.locationAddress = locationAddress;
 		this.rentFeePerHour = rentFeePerHour;
+		this.rentFeePerHourInEur = rentFeePerHourInEur;
 	}
 
 
@@ -54,11 +60,18 @@ public class LocationDTO {
 		this.rentFeePerHour = rentFeePerHour;
 	}
 
-
-	@Override
-	public String toString() {
-		return "LocationDTO [locationID=" + locationID + ", locationName=" + locationName + ", locationAddress="
-				+ locationAddress + ", rentFeePerHour=" + rentFeePerHour + "]";
+	public double getRentFeePerHourInEur() {
+		
+		BigDecimal bd = BigDecimal.valueOf(rentFeePerHourInEur);
+		bd = bd.setScale(2, RoundingMode.HALF_UP);
+		
+		return bd.doubleValue();
 	}
+
+	public void setRentFeePerHourInEur(double rentFeePerHourInEur) {
+		this.rentFeePerHourInEur = rentFeePerHourInEur;
+	}
+
+	
 
 }
