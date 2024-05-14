@@ -12,6 +12,21 @@ public class LocationDTO {
 	private double rentFeePerHourInEur;
 	
 	
+	
+	public LocationDTO(	String locationName,
+						int rentFeePerHour,
+						double rentFeePerHourInEur
+						) 
+	{
+		super();
+		this.locationID = 0;
+		this.locationName = locationName;
+		this.locationAddress = null;
+		this.rentFeePerHour = rentFeePerHour;
+		this.rentFeePerHourInEur = rentFeePerHourInEur;
+	}
+
+
 	public LocationDTO(	int locationID,
 						String locationName, 
 						String locationAddress, 

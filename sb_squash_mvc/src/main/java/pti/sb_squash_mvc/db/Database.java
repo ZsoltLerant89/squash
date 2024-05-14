@@ -174,16 +174,5 @@ public class Database {
 		return locationList;
 	}
 
-	public void logOutUser(User user) {
-		
-		Session session = sessionFactory.openSession();
-		Transaction tx = session.beginTransaction();
-		
-		session.merge(user);
-		
-		tx.commit();
-		session.close();
-		
-	}
 
 }

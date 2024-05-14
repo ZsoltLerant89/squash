@@ -1,14 +1,15 @@
 package pti.sb_squash_mvc.service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.jdom2.JDOMException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
 
 import pti.sb_squash_mvc.db.Database;
 import pti.sb_squash_mvc.dto.AdminDTO;
@@ -21,16 +22,19 @@ import pti.sb_squash_mvc.model.Game;
 import pti.sb_squash_mvc.model.Location;
 import pti.sb_squash_mvc.model.RolesOfUsers;
 import pti.sb_squash_mvc.model.User;
+import pti.sb_squash_mvc.parser.XMLParser;
 
 @Service
 public class AppService {
 	
 	private Database db;
+	private XMLParser parser;
 	
 	@Autowired
-	public AppService(Database db)
+	public AppService(Database db, XMLParser parser)
 	{
 		this.db = db;
+		this.parser = parser;
 	}
 
 	public UserDTO login(String userName, String password) {
@@ -59,7 +63,7 @@ public class AppService {
 		
 		User user = db.getUserByID(userID);
 		
-		if ((user != null) && user.isLoggedin() == true )
+		if (user != null)
 		{
 			user.setPassword(password);
 			user.setValidPassword(true);
@@ -70,7 +74,7 @@ public class AppService {
 		return gameDTOList;
 	}
 
-	public UserDTO convertUserToUserDTO(User user)
+	private UserDTO convertUserToUserDTO(User user)
 	{
 		UserDTO userDTO = new UserDTO(user.getUserID(),
 									  user.getUsername(),
@@ -86,7 +90,7 @@ public class AppService {
 		User user = db.getUserByID(userID);
 		GameDTOList gameDTOList = null ;
 		
-		if ((user != null) && user.isLoggedin() == true )
+		if (checkUserAndLogin(user))
 		{
 		
 			gameDTOList = new GameDTOList(userID);
@@ -219,7 +223,7 @@ public class AppService {
 		
 		User user = db.getUserByID(userID);
 		
-		if ((user != null) && user.isLoggedin() == true )
+		if (checkUserAndLogin(user))
 		{
 		
 		userDTO = new UserDTO(	user.getUserID(),
@@ -242,7 +246,7 @@ public class AppService {
 		
 		User user = db.getUserByID(userID);
 		
-		if((user != null) && (user.isLoggedin() == true) && (user.getRole() == RolesOfUsers.ADMIN))
+		if(checkAdminAndLogin(user))
 		{	
 			adminDTO =  getAdminDTO(userID);
 			password = generateRandomChars ();
@@ -264,7 +268,7 @@ public class AppService {
 		AdminDTO adminDTO = null;
 		User user = db.getUserByID(userID);
 		
-		if((user != null) && (user.isLoggedin() == true) && (user.getRole() == RolesOfUsers.ADMIN))
+		if(checkAdminAndLogin(user))
 		{
 			adminDTO =  getAdminDTO(userID);
 			
@@ -292,7 +296,7 @@ public class AppService {
 		
 		User user = db.getUserByID(userID);
 		
-		if((user != null) && (user.isLoggedin() == true) && (user.getRole() == RolesOfUsers.ADMIN))
+		if(checkAdminAndLogin(user))
 		{
 			adminDTO =  getAdminDTO(userID);
 			
@@ -337,8 +341,8 @@ public class AppService {
 	}
 	
 	
-   public static String generateRandomChars () {
-	  StringBuilder sb = new StringBuilder ();
+   private String generateRandomChars () {
+	   StringBuilder sb = new StringBuilder ();
 	   Random random = new Random ();
 	  
 	   String candidateChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
@@ -357,16 +361,71 @@ public class AppService {
 		
 		User user = db.getUserByID(userID);
 		
-		if ((user != null) && user.isLoggedin() == true )
+		if (checkUserAndLogin(user) == true )
 		{
 			user.setLoggedin(false);
 			
-			db.logOutUser(user);
+			db.updateUser(user);
 			
 			userDTO = convertUserToUserDTO(user);
 		}
 
 		return userDTO;
 	}
+
+	private boolean checkUserAndLogin(User user)
+	{
+		boolean result = false;
+		
+		if ((user != null) && user.isLoggedin())
+		{
+			result = true;
+		}
+		
+		return result;
+	}
+	
+	private boolean checkAdminAndLogin(User user)
+	{
+		boolean result = false;
+		
+		if((user != null) && (user.isLoggedin() == true) && (user.getRole() == RolesOfUsers.ADMIN))
+		{
+			result = true;
+		}
+		
+		return result;
+	}
+
+	public void exportGameDTOsToXML(GameDTOList gameDTOList) throws IOException {	
+		
+		List<GameDTO> gameDTOs = gameDTOList.getGameDTOList();
+		
+		parser.exportGameDTOsToXML(gameDTOs);
+		
+	}
+
+	public GameDTOList importGameDTOsFromXML(int userID, String path ) throws JDOMException, IOException {
+		
+		GameDTOList gameDTOList = null;
+		
+		User user = db.getUserByID(userID);
+		
+		if(checkAdminAndLogin(user))
+		{
+			List<GameDTO> gameDTOListFromXML = parser.getGameDTOListFromXML(path);
+			
+			gameDTOList = new GameDTOList(userID);
+			
+			for(int index = 0; index < gameDTOListFromXML.size(); index++)
+			{
+				GameDTO currentGameDTO = gameDTOListFromXML.get(index);
+				gameDTOList.addTogameDTOList(currentGameDTO);
+			}
+		}
+		
+		return gameDTOList;
+	}
+	
 
 }

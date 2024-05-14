@@ -13,6 +13,11 @@ public class GameDTO {
 	private LocalDate date;
 	
 	
+	public GameDTO() {
+		super();
+	}
+
+
 	public GameDTO(	int gameID,
 					UserDTO firstUserDTO, 
 					int firstUserScore, 

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Insert title here</title>
+	</head>
+	<body>
+		<table>
+			<tr>
+				<th>Game ID</th>
+				<th>First user</th>
+				<th>First user's score</th>
+				<th>Second user</th>
+				<th>Second user's score</th>
+				<th>Location</th>
+				<th>Rent fee/hour</th>
+				<th>Date</th>
+			</tr>
+			
+			<tr th:each="gameDTO : ${gameDTOList.getGameDTOList()}">
+				<td th:text="${gameDTO.getGameID()}"></td>
+				<td th:text="${gameDTO.getFirstUserDTO().getUserName()}"></td>
+				<td th:text="${gameDTO.getFirstUserScore()}"></td>
+				<td th:text="${gameDTO.getSecondUserDTO().getUserName()}"></td>
+				<td th:text="${gameDTO.getSecondUserScore()}"></td>
+				<td th:text="${gameDTO.getLocationDTO().getLocationName()}"></td>
+				<td th:text="${gameDTO.getLocationDTO().getRentFeePerHour() + '/' + gameDTO.getLocationDTO().getRentFeePerHourInEur()}"></td>
+				<td th:text="${gameDTO.getDate()}"></td>
+			</tr>
+		</table>
+	</body>
+</html>

@@ -10,6 +10,15 @@ public class UserDTO {
 	private RolesOfUsers role;
 	
 	
+	public UserDTO(String userName) {
+		super();
+		this.userID = 0;
+		this.userName = userName;
+		this.validPassword = false;
+		this.role = null;
+	}
+
+
 	public UserDTO(	int userID,
 					String userName, 
 					boolean validPassword,

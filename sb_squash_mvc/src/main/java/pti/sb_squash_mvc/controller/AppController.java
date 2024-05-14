@@ -1,7 +1,10 @@
 package pti.sb_squash_mvc.controller;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 
+import org.jdom2.JDOMException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import pti.sb_squash_mvc.dto.AdminDTO;
+import pti.sb_squash_mvc.dto.GameDTO;
 import pti.sb_squash_mvc.dto.GameDTOList;
 import pti.sb_squash_mvc.dto.UserDTO;
 import pti.sb_squash_mvc.model.RolesOfUsers;
@@ -193,7 +197,11 @@ public class AppController {
 		
 		String targetPage = "login.html";
 		
-		AdminDTO adminDTO = service.regUser(userID,userName,password,role);	
+		AdminDTO adminDTO = service.regUser(userID,
+											userName,
+											password,
+											role
+											);	
 		if(adminDTO != null)
 		{
 			model.addAttribute("adminDTO",adminDTO);
@@ -210,7 +218,11 @@ public class AppController {
 								@RequestParam("rentfeeperhour") int rentFeePerHour
 								)
 	{
-		AdminDTO adminDTO = service.regLocation(userID,locationName,locationAddress,rentFeePerHour);
+		AdminDTO adminDTO = service.regLocation(userID,
+												locationName,
+												locationAddress,
+												rentFeePerHour
+												);
 		model.addAttribute("adminDTO",adminDTO);
 		
 		return "admin.html";
@@ -228,7 +240,14 @@ public class AppController {
 						  )
 	{
 		
-		AdminDTO adminDTO = service.regGame(userID,firstUserID,secondUserID,gameLocationID,firstUserScore,secondUserScore,date);
+		AdminDTO adminDTO = service.regGame(userID,
+											firstUserID,
+											secondUserID,
+											gameLocationID,
+											firstUserScore,
+											secondUserScore,
+											date
+											);
 		model.addAttribute("adminDTO",adminDTO);
 		
 		
@@ -242,7 +261,9 @@ public class AppController {
 	
 	{
 		String targetPage = "index.html";
+		
 		UserDTO userDTO = service.logOut(userID);
+		
 		if (userDTO != null)
 		{
 			model.addAttribute("userDTO", userDTO);
@@ -251,5 +272,47 @@ public class AppController {
 		
 		return targetPage;
 	}
+	
+	@PostMapping ("/admin/export")
+	public String exportXML(Model model,
+						@RequestParam("userid") int userID
+						) throws IOException
+	{
+		
+		GameDTOList gameDTOList = service.getGameDTOList(userID,null);
+		
+		if(gameDTOList != null)
+		{
+			model.addAttribute("gameDTOList", gameDTOList);
+			
+			AdminDTO adminDTO = service.getAdminDTO(userID);
+		  	model.addAttribute("adminDTO", adminDTO);
+		  	
+			service.exportGameDTOsToXML(gameDTOList);
+		}
+		
+		return "admin.html";
+	}
+	
+	@GetMapping ("/admin/import")
+	public String importXML(Model model,
+				 @RequestParam("userid") int userID,
+				 @RequestParam("path") String path
+				 ) throws JDOMException, IOException
+	{
+		GameDTOList gameDTOList = service.importGameDTOsFromXML(userID,path);
+		
+		if(gameDTOList != null)
+		{
+			model.addAttribute("gameDTOList", gameDTOList);
+			
+			AdminDTO adminDTO = service.getAdminDTO(userID);
+		  	model.addAttribute("adminDTO", adminDTO);
+	
+		}
+		
+		return "import.html";
+	}
+	
 }
 

@@ -110,5 +110,30 @@
 			<input type="submit" value="Register" />
 		</form>
 		
+			<br>
+			<div th:if="${gameDTOList == null}">
+				<form action="/admin/export" method="post">
+					<input type="hidden" name="userid" th:value="${userid}" /> 
+					<input type="submit" value="Export to XML"/>
+				</form>
+				
+				<form action="/admin/import" method="get">
+					<input type="hidden" name="userid" th:value="${userid}" /> 
+					<input type="text" name="path" />
+ 					<input type="submit" value="Import from XML"/>
+				</form>
+			</div>
+			<div th:if="${gameDTOList != null}">
+				<form action="/admin/export" method="post">
+					<input type="hidden" name="userid" th:value="${gameDTOList.getUserID()}" /> 
+					<input type="submit" value="Export to XML"/>
+				</form>
+				
+				<form action="/admin/import" method="get">
+					<input type="hidden" name="userid" th:value="${gameDTOList.getUserID()}" /> 
+					<input type="text" name="path" />
+ 					<input type="submit" value="Import from XML"/>
+				</form>
+			</div>
 	</body>
 </html>
