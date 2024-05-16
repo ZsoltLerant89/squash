@@ -2,9 +2,26 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>Insert title here</title>
+		<title>Import</title>
+		<style>
+			table 
+			{
+			  border-collapse: collapse;
+			  width: 100%;
+			}
+			
+			th, td 
+			{
+			  padding: 8px;
+			  text-align: left;
+			  border-bottom: 1px solid #DDD;
+			}
+			
+			tr:hover {background-color: #D6EEEE;}
+		</style>
 	</head>
 	<body>
+		<h3>Imported datas:</h3>
 		<table>
 			<tr>
 				<th>Game ID</th>
@@ -28,5 +45,11 @@
 				<td th:text="${gameDTO.getDate()}"></td>
 			</tr>
 		</table>
+		<br/>
+		
+		<form action="/index" method="get">
+			<input type="hidden" name="userid" th:value="${gameDTOList.getUserID()}"/>
+			<input type="submit" value="Back to Index" />
+		</form>
 	</body>
 </html>

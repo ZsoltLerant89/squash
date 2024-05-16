@@ -85,7 +85,7 @@ public class AppService {
 		return userDTO;
 	}
 	
-	public GameDTOList getGameDTOList(int userID, String userName) {
+	public GameDTOList getGameDTOList(int userID, String userName, String locationName) {
 		
 		User user = db.getUserByID(userID);
 		GameDTOList gameDTOList = null ;
@@ -96,12 +96,6 @@ public class AppService {
 			gameDTOList = new GameDTOList(userID);
 			
 			List<Game> gameList = db.getGames();
-			
-			List<User> userList = null;
-			List<UserDTO> userDTOList = null;
-			
-			List<Location> locationList = null;
-			List<LocationDTO> locationDTOList = null;
 			
 			/** Currency */
 			
@@ -136,8 +130,7 @@ public class AppService {
 															);
 				
 				if(	(firstUserDTO.getUserName().equals(userName)) || 
-					(secondUserDTO.getUserName().equals(userName)) || 
-					(userName == null)
+					(secondUserDTO.getUserName().equals(userName))
 					)
 				{	
 					GameDTO currentGameDTO = new GameDTO(currentGame.getGameID(),
@@ -151,9 +144,8 @@ public class AppService {
 					
 					gameDTOList.addTogameDTOList(currentGameDTO);
 				}
-				else if((locationDTO.getLocationName().equals(userName)) || 
-						(userName == null)
-						)
+				
+				if(locationDTO.getLocationName().equals(locationName))
 				{	
 					GameDTO currentGameDTO = new GameDTO(currentGame.getGameID(),
 														 firstUserDTO,
@@ -167,47 +159,26 @@ public class AppService {
 					gameDTOList.addTogameDTOList(currentGameDTO);
 				}
 				
+				if((userName == null) && locationName == null) 
+				{
+					GameDTO currentGameDTO = new GameDTO(currentGame.getGameID(),
+							 firstUserDTO,
+							 currentGame.getFirstUserScore(),
+							 secondUserDTO,
+							 currentGame.getSecondUserScore(),
+							 locationDTO,
+							 currentGame.getDate()
+							);
+					
+					gameDTOList.addTogameDTOList(currentGameDTO);
+				}
+				
 			}
+
+			List<UserDTO> userDTOList = getUserDTOList();
+
+			List<LocationDTO>locationDTOList = getLocationDTOList();
 			
-			userList = new ArrayList<>();
-			userDTOList = new ArrayList<>();
-			
-			userList = db.getUsers();
-			
-			locationList = new ArrayList<>();
-			locationDTOList = new ArrayList<>();
-			
-			locationList = db.getLocations();
-			
-			for(int userIndex = 0; userIndex < userList.size(); userIndex++)
-			{
-				User currentUser = userList.get(userIndex);
-				UserDTO currentUserDTO = new UserDTO(currentUser.getUserID(),
-													 currentUser.getUsername(),
-													 currentUser.isValidPassword(),
-													 currentUser.getRole()
-													 );
-				
-				userDTOList.add(currentUserDTO);	
-			}
-			
-			for(int locationIndex = 0; locationIndex < locationList.size(); locationIndex++)
-			{
-				
-				Location currentLocation = locationList.get(locationIndex);
-				
-				double rentFeePerHourInEur = (currentLocation.getRentFeePerHour() / currency.getValue());
-				
-				LocationDTO currentLocationDTO = new LocationDTO(currentLocation.getLocationID(),
-																 currentLocation.getLocationName(),
-																 currentLocation.getLocationAddress(),
-																 currentLocation.getRentFeePerHour(),
-																 rentFeePerHourInEur
-																 );
-				
-				locationDTOList.add(currentLocationDTO);	
-			}
-		
 			gameDTOList.setUserList(userDTOList);
 			gameDTOList.setLocationList(locationDTOList);
 			
@@ -217,28 +188,9 @@ public class AppService {
 		return gameDTOList;
 	}
 
-	public UserDTO getUserByID(int userID) 
-	{
-		UserDTO userDTO = null;
-		
-		User user = db.getUserByID(userID);
-		
-		if (checkUserAndLogin(user))
-		{
-		
-		userDTO = new UserDTO(	user.getUserID(),
-								user.getUsername(),
-								user.isValidPassword(),
-								user.getRole()
-								);
-		}
-		
-		return userDTO;
-	}
 
 	public AdminDTO regUser(int userID,
 							String userName, 
-							String password, 
 							RolesOfUsers role
 							) 
 	{
@@ -248,11 +200,12 @@ public class AppService {
 		
 		if(checkAdminAndLogin(user))
 		{	
-			adminDTO =  getAdminDTO(userID);
-			password = generateRandomChars ();
+			
+			String password = generateRandomChars ();
 			
 			User newUser = new User(userName,password,role);
 			db.persistUser(newUser);
+			adminDTO =  getAdminDTO(userID);
 		}	
 		
 
@@ -270,14 +223,14 @@ public class AppService {
 		
 		if(checkAdminAndLogin(user))
 		{
-			adminDTO =  getAdminDTO(userID);
-			
+	
 			Location newLocation = new Location(locationName,
 											 locationAddress,
 											 rentFeePerHour
 											 );
 			
 			db.persistLocation(newLocation);
+			adminDTO =  getAdminDTO(userID);
 		}
 		
 		return adminDTO;
@@ -320,23 +273,25 @@ public class AppService {
 	{
 		AdminDTO adminDTO = null;
 		
-		User admin = db.getUserByID(userID);
-		UserDTO adminUserDTO = new UserDTO(	userID,
-											admin.getUsername(),
-											admin.isValidPassword(),
-											admin.getRole()
-											);
+		User user = db.getUserByID(userID);
 		
-		GameDTOList gameDTOList = getGameDTOList(userID,null);
-		
-		List<UserDTO> userList = gameDTOList.getUserList();	
-		List<LocationDTO> locationList = gameDTOList.getLocationList();
-		
-		adminDTO = new AdminDTO(adminUserDTO);
-		
-		adminDTO.setUserDTOList(userList);
-		adminDTO.setLocationDTOList(locationList);
-		
+		if (checkAdminAndLogin(user))
+		{
+			UserDTO adminUserDTO = new UserDTO(	userID,
+												user.getUsername(),
+												user.isValidPassword(),
+												user.getRole()
+												);
+	
+			List<UserDTO> userDTOList = getUserDTOList();	
+			List<LocationDTO> locationDTOList = getLocationDTOList();
+			
+			adminDTO = new AdminDTO(adminUserDTO);
+			
+			adminDTO.setUserDTOList(userDTOList);
+			adminDTO.setLocationDTOList(locationDTOList);
+			
+		}
 		return adminDTO;
 	}
 	
@@ -397,8 +352,9 @@ public class AppService {
 		return result;
 	}
 
-	public void exportGameDTOsToXML(GameDTOList gameDTOList) throws IOException {	
+	public void exportGameDTOsToXML(int userID) throws IOException {	
 		
+		GameDTOList gameDTOList = getGameDTOList(userID, null,null);
 		List<GameDTO> gameDTOs = gameDTOList.getGameDTOList();
 		
 		parser.exportGameDTOsToXML(gameDTOs);
@@ -427,5 +383,54 @@ public class AppService {
 		return gameDTOList;
 	}
 	
+	private List<UserDTO> getUserDTOList()
+	{
+		List<User>	userList = db.getUsers();
+		List<UserDTO> userDTOList = new ArrayList<>();
+		
+		for(int userIndex = 0; userIndex < userList.size(); userIndex++)
+		{
+			User currentUser = userList.get(userIndex);
+			UserDTO currentUserDTO = new UserDTO(currentUser.getUserID(),
+												 currentUser.getUsername(),
+												 currentUser.isValidPassword(),
+												 currentUser.getRole()
+												 );
+			
+			userDTOList.add(currentUserDTO);	
+		}
+		
+		return userDTOList;
+	}
 
+	private List<LocationDTO> getLocationDTOList()
+	{
+		List<Location> locationList = db.getLocations();
+		List<LocationDTO> locationDTOList = new ArrayList<>();
+		
+		/** Currency */
+		
+		RestTemplate rt = new RestTemplate();
+		Currency currency = rt.getForObject("http://localhost:8081/geteuro", Currency.class);
+		
+		for(int locationIndex = 0; locationIndex < locationList.size(); locationIndex++)
+		{
+			
+			Location currentLocation = locationList.get(locationIndex);
+			
+			double rentFeePerHourInEur = (currentLocation.getRentFeePerHour() / currency.getValue());
+			
+			LocationDTO currentLocationDTO = new LocationDTO(currentLocation.getLocationID(),
+															 currentLocation.getLocationName(),
+															 currentLocation.getLocationAddress(),
+															 currentLocation.getRentFeePerHour(),
+															 rentFeePerHourInEur
+															 );
+			
+			locationDTOList.add(currentLocationDTO);	
+		}
+		
+		return locationDTOList;
+		
+	}
 }

@@ -14,7 +14,24 @@
     <location>
       <name>Budapest</name>
       <feehuf>1600</feehuf>
-      <feeeur>4.01</feeeur>
+      <feeeur>4.03</feeeur>
+    </location>
+  </game>
+  <game>
+    <gid>23</gid>
+    <date>2024-05-14</date>
+    <firstuser>
+      <name>Zsolti</name>
+      <score>999</score>
+    </firstuser>
+    <seconduser>
+      <name>Tamas</name>
+      <score>777</score>
+    </seconduser>
+    <location>
+      <name>Teszt Város</name>
+      <feehuf>2000</feehuf>
+      <feeeur>5.03</feeeur>
     </location>
   </game>
   <game>
@@ -31,24 +48,7 @@
     <location>
       <name>Zalaegerszeg</name>
       <feehuf>1200</feehuf>
-      <feeeur>3.01</feeeur>
-    </location>
-  </game>
-  <game>
-    <gid>6</gid>
-    <date>2023-08-01</date>
-    <firstuser>
-      <name>Zoli</name>
-      <score>411</score>
-    </firstuser>
-    <seconduser>
-      <name>Csabi</name>
-      <score>211</score>
-    </seconduser>
-    <location>
-      <name>Pécs</name>
-      <feehuf>2000</feehuf>
-      <feeeur>5.02</feeeur>
+      <feeeur>3.02</feeeur>
     </location>
   </game>
   <game>
@@ -65,7 +65,24 @@
     <location>
       <name>Budapest</name>
       <feehuf>1600</feehuf>
-      <feeeur>4.01</feeeur>
+      <feeeur>4.03</feeeur>
+    </location>
+  </game>
+  <game>
+    <gid>6</gid>
+    <date>2023-08-01</date>
+    <firstuser>
+      <name>Zoli</name>
+      <score>411</score>
+    </firstuser>
+    <seconduser>
+      <name>Csabi</name>
+      <score>211</score>
+    </seconduser>
+    <location>
+      <name>Pécs</name>
+      <feehuf>2000</feehuf>
+      <feeeur>5.03</feeeur>
     </location>
   </game>
   <game>
@@ -82,7 +99,7 @@
     <location>
       <name>Budapest</name>
       <feehuf>1600</feehuf>
-      <feeeur>4.01</feeeur>
+      <feeeur>4.03</feeeur>
     </location>
   </game>
 </games>

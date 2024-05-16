@@ -6,13 +6,11 @@
 	</head>
 	<body>
 		<h2>Welcome on the 'Admin Page' !</h2>
-		<div th:if="${adminDTO == null}")>
-			<a th:href="'/index?userid=' + ${userDTO.getUserID()}" ><button>Back to Index</button></a>	
-		</div>
-		<div th:if="${adminDTO != null}")>
-			<a th:href="'/index?userid=' + ${adminDTO.getAdmin().getUserID()}" ><button>Back to Index</button></a>	
-		</div>
-		<br/>
+
+		<form action="/index" method="get">
+			<input type="hidden" name="userid" th:value="${adminDTO.getAdmin().getUserID()}"/>
+			<input type="submit" value="Back to Index" />
+		</form>
 		<br/>
 		
 		<form action="/admin/reguser" method="post">
@@ -24,8 +22,6 @@
 			<input type="text" name="username"/>
 			<br/>
 			<br/>
-			
-			<input type="hidden" name="password"/>
 			
 			<label for="role">Role:</label>
 			<input type="text" name="role"/>
@@ -111,29 +107,17 @@
 		</form>
 		
 			<br>
-			<div th:if="${gameDTOList == null}">
-				<form action="/admin/export" method="post">
-					<input type="hidden" name="userid" th:value="${userid}" /> 
-					<input type="submit" value="Export to XML"/>
-				</form>
-				
-				<form action="/admin/import" method="get">
-					<input type="hidden" name="userid" th:value="${userid}" /> 
-					<input type="text" name="path" />
- 					<input type="submit" value="Import from XML"/>
-				</form>
-			</div>
-			<div th:if="${gameDTOList != null}">
-				<form action="/admin/export" method="post">
-					<input type="hidden" name="userid" th:value="${gameDTOList.getUserID()}" /> 
-					<input type="submit" value="Export to XML"/>
-				</form>
-				
-				<form action="/admin/import" method="get">
-					<input type="hidden" name="userid" th:value="${gameDTOList.getUserID()}" /> 
-					<input type="text" name="path" />
- 					<input type="submit" value="Import from XML"/>
-				</form>
-			</div>
+			
+			<form action="/admin/export" method="post">
+				<input type="hidden" name="userid" th:value="${adminDTO.getAdmin().getUserID()}" /> 
+				<input type="submit" value="Export to XML"/>
+			</form>
+			<br/>
+			<form action="/admin/import" method="get">
+				<input type="hidden" name="userid" th:value="${adminDTO.getAdmin().getUserID()}" /> 
+				<input type="text" name="path" />
+					<input type="submit" value="Import from XML"/>
+			</form>
+			
 	</body>
 </html>
